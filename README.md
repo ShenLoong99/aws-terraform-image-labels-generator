@@ -1,5 +1,12 @@
 <a id="readme-top"></a>
 
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![Unlicense License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
 <div>
   <h1>📷 AWS Image Labels Generator</h1>
     <img src="assets/cats-ui-output.png" alt="cats-ui-output" width="800">
@@ -17,6 +24,7 @@
     <li><a href="#built-with">Built With</a></li>
     <li><a href="#use-cases">Use Cases</a></li>
     <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#file-structure">File Structure</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
@@ -75,6 +83,23 @@
   <li><strong>Analysis:</strong> Rekognition performs label detection and returns the results to the Lambda function.</li>
   <li><strong>Logging:</strong> Results and confidence scores are streamed to Amazon CloudWatch Logs for real-time monitoring.</li>
 </ol>
+<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
+
+<h2 id="file-structure">File Structure</h2>
+<pre>
+  .
+  ├── assets/                     # Architecture diagrams and UI screenshots
+  ├── lambda/                     # Backend Serverless Logic
+  │   ├── detect_labels.py        # Python script for Rekognition & CloudWatch logging
+  │   └── function.zip            # Optimized deployment package (<1KB)
+  ├── main.tf                     # Core IaC: Provisions S3, Lambda, and Rekognition IAM
+  ├── output.tf                   # Defines S3 bucket names and IAM role ARNs for CLI use
+  ├── terraform.tf                # Terraform Cloud backend & workspace configuration
+  ├── variable.tf                 # Input variables for AWS Region and resource tagging
+  ├── .gitignore                  # Prevents tracking of .terraform and local state backups
+  ├── .terraform.lock.hcl         # Ensures consistent provider versions across environments
+  └── README.md                   # Project documentation and setup guide
+</pre>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="getting-started">Getting Started</h2>
@@ -362,3 +387,16 @@
 <p>Tan Si Kai - <a href="https://linkedin.com/in/si-kai-tan">LinkedIn</a></p>
 <p>Project Link: <a href="https://github.com/ShenLoong99/my-terraform-aws-projects-2025/tree/main/AWS-Image-Labels-Generator">Image Labels Generator</a></p>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
+
+[contributors-shield]: https://img.shields.io/github/contributors/ShenLoong99/aws-terraform-image-labels-generator.svg?style=for-the-badge
+[contributors-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/ShenLoong99/aws-terraform-image-labels-generator.svg?style=for-the-badge
+[forks-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/network/members
+[stars-shield]: https://img.shields.io/github/stars/ShenLoong99/aws-terraform-image-labels-generator.svg?style=for-the-badge
+[stars-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/stargazers
+[issues-shield]: https://img.shields.io/github/issues/ShenLoong99/aws-terraform-image-labels-generator.svg?style=for-the-badge
+[issues-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/issues
+[license-shield]: https://img.shields.io/github/license/ShenLoong99/aws-terraform-image-labels-generator.svg?style=for-the-badge
+[license-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/https://linkedin.com/in/si-kai-tan
