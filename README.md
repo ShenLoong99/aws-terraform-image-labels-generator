@@ -142,9 +142,9 @@
   </li>
   <li>
     <strong>Start the Log Stream:</strong> Open your VS Code terminal and run the following command to see results as they happen.<br>
-    <pre>aws logs tail /aws/lambda/ &lt;your-s3-bucket-name&gt; --follow</pre>
+    <pre>aws logs tail /aws/lambda/&lt;your-lambda-function-name&gt; --follow</pre>
     Use the command below if on Git Bash Terminal: <br>
-    <pre>MSYS_NO_PATHCONV=1 aws logs tail /aws/lambda/ &lt;your-s3-bucket-name&gt; --follow</pre>
+    <pre>MSYS_NO_PATHCONV=1 aws logs tail /aws/lambda/&lt;your-lambda-function-name&gt; --follow</pre>
   </li>
   <li>
     <strong>View Results:</strong> The detection results will appear instantly in your VS Code terminal.<br>
