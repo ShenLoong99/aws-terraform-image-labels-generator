@@ -8,6 +8,11 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 <div>
+  <p>
+    <strong>Notice:</strong> This project has been migrated from a monolithic collection at <a href="https://github.com/ShenLoong99/my-terraform-aws-projects-2025">my-terraform-aws-projects-2025</a> to this dedicated repository for better project isolation and CI/CD management.<br>
+    To review the full development lifecycle, including initial architectural decisions and incremental code changes, please refer to the original commit history in the source repository.
+  </p>
+
   <h1>📷 AWS Image Labels Generator</h1>
     <img src="assets/cats-ui-output.png" alt="cats-ui-output" width="800">
     <p>
