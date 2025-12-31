@@ -113,25 +113,68 @@
     <li>An active <strong>AWS Account</strong>.</li>
     <li><strong>Terraform CLI / Terraform Cloud(optional)</strong> for IaC deployment.</li>
     <li><strong>Python 3.x</strong> installed locally for running the detection script.</li>
+    <li><strong>Set your AWS Region:</strong> Set to whatever <code>aws_region</code> you want in <code>variables.tf</code>.</li>
 </ul>
+
+<h3>Terraform State Management</h3>
+<p>Select one:</p>
+<ol>
+   <li>Terraform Cloud</li>
+   <li>Terraform Local CLI</li>
+</ol>
+
+<h4>Terraform Cloud Configuration</h4>
+<p>If you choose Terraform Cloud, please follow the steps below:</p>
+<ol>
+   <li>Create a new <strong>Workspace</strong> in Terraform Cloud.</li>
+   <li>In the Variables tab, add the following <strong>Terraform Variables:</strong>
+   </li>
+   <li>
+    Add the following <strong>Environment Variables</strong> (AWS Credentials):
+    <ul>
+      <li><code>AWS_ACCESS_KEY_ID</code></li>
+      <li><code>AWS_SECRET_ACCESS_KEY</code></li>
+   </ul>
+   </li>
+</ol>
+
+<h4>Terraform Local CLI Configuration</h4>
+<p>If you choose Terraform Local CLI, please follow the steps below:</p>
+<ol>
+   <li>
+      Comment the <code>backend</code> block in <code>terraform.tf</code>:
+      <pre>backend "remote" {
+  #   hostname     = "app.terraform.io"
+  #   organization = "my-terraform-aws-projects-2025"
+  #   workspaces {
+  #     name = "AWS-Image-Labels-Generator"
+  #   }
+  # }</pre>
+   </li>
+   <li>
+    Add the following <strong>Environment Variables</strong> (AWS Credentials):
+    <pre>git bash command:
+export AWS_ACCESS_KEY_ID=&lt;your-aws-access-key-id&gt;
+export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
+</ol>
 
 <h3>Installation & Deployment</h3>
 <ol>
     <li>
-        <strong>Clone the Repository:</strong>
+        <strong>Clone the Repository</strong>
     </li>
     <li>
         <strong>Provision Infrastructure:</strong>
-        Push your changes to the <code>main</code> branch to trigger a Terraform Cloud plan. Once approved, Terraform will provision your S3 bucket and IAM resources.
+        <ul>
+          <li>
+            <strong>Terraform Cloud</strong> → <strong>Initialize & Apply:</strong> Push your code to GitHub. Terraform Cloud will automatically detect the change, run a <code>plan</code>, and wait for your approval.
+          </li>
+          <li>
+            <strong>Terraform CLI</strong> → <strong>Initialize & Apply:</strong> Run <code>terraform init</code> → <code>terraform plan</code> → <code>terraform apply</code>, and wait for your approval.
+          </li>
+        </ul>
     </li>
-    <li>
-        <strong>Configure Local Environment:</strong>
-        Create a <code>.env</code> file or export your AWS credentials and the S3 bucket name (found in the Terraform output) to your environment variables.
-    </li>
-    <li>
-        <strong>Install Python Dependencies:</strong>
-        <code>pip install -r requirements.txt</code>
-    </li>
+    
 </ol>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
