@@ -91,19 +91,18 @@
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="file-structure">File Structure</h2>
-<pre>
-  .
-  ├── assets/                     # Architecture diagrams and UI screenshots
-  ├── lambda/                     # Backend Serverless Logic
-  │   ├── detect_labels.py        # Python script for Rekognition & CloudWatch logging
-  │   └── function.zip            # Optimized deployment package (<1KB)
-  ├── main.tf                     # Core IaC: Provisions S3, Lambda, and Rekognition IAM
-  ├── output.tf                   # Defines S3 bucket names and IAM role ARNs for CLI use
-  ├── terraform.tf                # Terraform Cloud backend & workspace configuration
-  ├── variable.tf                 # Input variables for AWS Region and resource tagging
-  ├── .gitignore                  # Prevents tracking of .terraform and local state backups
-  ├── .terraform.lock.hcl         # Ensures consistent provider versions across environments
-  └── README.md                   # Project documentation and setup guide
+<pre>.
+├── assets/                     # Architecture diagrams and UI screenshots
+├── lambda/                     # Backend Serverless Logic
+│   ├── detect_labels.py        # Python script for Rekognition & CloudWatch logging
+│   └── function.zip            # Optimized deployment package (<1KB)
+├── main.tf                     # Core IaC: Provisions S3, Lambda, and Rekognition IAM
+├── output.tf                   # Defines S3 bucket names and IAM role ARNs for CLI use
+├── terraform.tf                # Terraform Cloud backend & workspace configuration
+├── variable.tf                 # Input variables for AWS Region and resource tagging
+├── .gitignore                  # Prevents tracking of .terraform and local state backups
+├── .terraform.lock.hcl         # Ensures consistent provider versions across environments
+└── README.md                   # Project documentation and setup guide
 </pre>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
@@ -143,13 +142,13 @@
 <ol>
    <li>
       Comment the <code>backend</code> block in <code>terraform.tf</code>:
-      <pre>backend "remote" {
-  #   hostname     = "app.terraform.io"
-  #   organization = "my-terraform-aws-projects-2025"
-  #   workspaces {
-  #     name = "AWS-Image-Labels-Generator"
-  #   }
-  # }</pre>
+      <pre># backend "remote" {
+#   hostname     = "app.terraform.io"
+#   organization = "my-terraform-aws-projects-2025"
+#   workspaces {
+#     name = "AWS-Image-Labels-Generator"
+#   }
+# }</pre>
    </li>
    <li>
     Add the following <strong>Environment Variables</strong> (AWS Credentials):
@@ -431,11 +430,6 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
 </ul>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
-<h2 id="contact">Contact</h2>
-<p>Tan Si Kai - <a href="https://linkedin.com/in/si-kai-tan">LinkedIn</a></p>
-<p>Project Link: <a href="https://github.com/ShenLoong99/my-terraform-aws-projects-2025/tree/main/AWS-Image-Labels-Generator">Image Labels Generator</a></p>
-<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
-
 [contributors-shield]: https://img.shields.io/github/contributors/ShenLoong99/aws-terraform-image-labels-generator.svg?style=for-the-badge
 [contributors-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/ShenLoong99/aws-terraform-image-labels-generator.svg?style=for-the-badge
@@ -447,4 +441,4 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
 [license-shield]: https://img.shields.io/github/license/ShenLoong99/aws-terraform-image-labels-generator.svg?style=for-the-badge
 [license-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/https://linkedin.com/in/si-kai-tan
+[linkedin-url]: https://linkedin.com/in/si-kai-tan
