@@ -33,7 +33,7 @@
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#challenges-faced">Roadmap</a></li>
+    <li><a href="#challenges-faced">Challenges</a></li>
     <li><a href="#cost-optimization">Cost Optimization</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
