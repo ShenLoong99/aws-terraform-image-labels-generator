@@ -5,6 +5,7 @@ skip-check:
   - CKV_AWS_117 # Ensure Lambda is in VPC (Avoids $32/mo NAT Gateway)
   - CKV_AWS_173 # Check encryption for env variables (Avoids $1/mo KMS fee)
   - CKV_AWS_272 # Validate code-signing (Complex setup, unnecessary for small projects)
+  - CKV_AWS_27  # Ensure SQS is encrypted (Avoids KMS monthly fees)
 
   # S3-specific skips
   - CKV_AWS_145 # S3 Default Encryption with KMS (Avoids $1/mo KMS fee)
@@ -13,4 +14,4 @@ skip-check:
 
   # CloudWatch-specific skips
   - CKV_AWS_158 # CloudWatch Log Group KMS Encryption (Avoids $1/mo KMS fee)
-  - CKV_BWS_92  # Log retention 1 year (Stick to 7 days for cost optimization)
+  - CKV_AWS_338  # Log retention 1 year (Stick to 7 days for cost optimization)
