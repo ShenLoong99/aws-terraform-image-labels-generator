@@ -33,6 +33,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "images_bucket_lifecycle" {
       days = 30
     }
 
+    # Abort failed uploads after 7 days to save money
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+
     # If enabled versioning, delete non-current versions after 7 days
     noncurrent_version_expiration {
       noncurrent_days = 7

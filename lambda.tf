@@ -7,16 +7,20 @@ data "archive_file" "lambda_zip" {
 
 # Lambda function for Rekognition
 resource "aws_lambda_function" "rekognition_lambda" {
-  function_name = "${var.project_name}-rekognition-lambda"
-  role          = aws_iam_role.lambda_role.arn
-  runtime       = "python3.11"
-  timeout       = 10  # Lambda Timeout Explicitly Set
-  memory_size   = 256 # Lambda Memory Explicitly Set
+  function_name                  = "${var.project_name}-rekognition-lambda"
+  role                           = aws_iam_role.lambda_role.arn
+  runtime                        = "python3.11"
+  timeout                        = 10  # Lambda Timeout Explicitly Set
+  memory_size                    = 256 # Lambda Memory Explicitly Set
+  reserved_concurrent_executions = 5   # Limit concurrency to control costs
+  filename                       = data.archive_file.lambda_zip.output_path
+  source_code_hash               = data.archive_file.lambda_zip.output_base64sha256
+  handler                        = "detect_labels.lambda_handler"
 
-  filename         = data.archive_file.lambda_zip.output_path
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
-
-  handler = "detect_labels.lambda_handler"
+  # Link the DLQ
+  dead_letter_config {
+    target_arn = aws_sqs_queue.lambda_dlq.arn
+  }
 
   environment {
     variables = {
@@ -48,4 +52,12 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   }
 
   depends_on = [aws_lambda_permission.allow_s3]
+}
+
+
+# The Dead Letter Queue
+resource "aws_sqs_queue" "lambda_dlq" {
+  name                      = "${var.project_name}-lambda-dlq"
+  message_retention_seconds = 1209600 # 14 days
+  receive_wait_time_seconds = 20      # Enable long polling (Free Tier friendly)
 }
