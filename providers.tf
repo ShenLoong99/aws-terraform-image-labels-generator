@@ -25,3 +25,17 @@ terraform {
     }
   }
 }
+
+# Configure the AWS Provider
+provider "aws" {
+  region = var.aws_region
+
+  default_tags {
+    tags = {
+      Project     = var.project_name
+      Environment = "Production"
+      ManagedBy   = "Terraform"
+      Owner       = "ShenLoong"
+    }
+  }
+}
