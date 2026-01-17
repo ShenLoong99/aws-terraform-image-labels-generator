@@ -1,0 +1,67 @@
+name: "Production Deployment"
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "**.tf"
+      - "lambda/**"
+      - ".github/workflows/cd.yml"
+      - 'tests/**'
+  workflow_dispatch:
+
+jobs:
+  # Wait for Terraform Cloud to complete the VCS-triggered run
+  terraform-cloud-wait:
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Wait for TFC Apply
+        uses: binxio/tfe-run-wait-action@main
+        with:
+          action: wait
+          token: ${{ secrets.TF_API_TOKEN }}
+          organization: "my-terraform-aws-projects-2025"
+          workspace: "AWS-Image-Labels-Generator" # Update this to match your TFC workspace name
+          clone_url: ${{ github.server_url }}/${{ github.repository }}.git
+          commit_sha: ${{ github.sha }}
+          branch: "main"
+
+  # Post-Deployment Verification
+  post-deploy:
+    needs: terraform-cloud-wait
+    runs-on: ubuntu-latest
+    environment: prod
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Pull Terraform Outputs
+        id: tf-outputs
+        run: |
+          # Pull values directly from the Terraform state
+          echo "FUNCTION_NAME=$(terraform output -raw lambda_function_name)" >> $GITHUB_ENV
+          echo "AWS_REGION=$(terraform output -raw aws_region)" >> $GITHUB_ENV
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::871308866502:role/GitHubActionRole
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Run Verification Script
+        run: |
+          chmod +x ./tests/verify-lambda.sh
+          ./tests/verify-lambda.sh
+        env:
+          FUNCTION_NAME: ${{ env.FUNCTION_NAME }}

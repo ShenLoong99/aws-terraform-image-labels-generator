@@ -1,0 +1,56 @@
+name: "Update Documentation"
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'README.template.md'       # Trigger when you change the layout
+      - '**.tf'                    # Trigger when infrastructure outputs change
+      - '.github/workflows/update-readme.yml' # Trigger when you fix the script
+  workflow_dispatch: # Allows you to still run it manually for testing
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    # Added permissions to ensure the GITHUB_TOKEN can push the changes back
+    permissions:
+      contents: write 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Fetch Dynamic Data
+        id: data
+        run: |
+          # Use the GitHub API with the built-in token to avoid rate limits
+          LINKEDIN=$(curl -s https://api.github.com/users/${{ github.repository_owner }}/social_accounts | jq -r '.[] | select(.url | contains("linkedin.com")) | .url')
+          
+          # Fallback for empty social accounts
+          echo "LINKEDIN_URL=${LINKEDIN:-'#'}" >> $GITHUB_ENV
+
+      - name: Generate README from Template
+        run: |
+          if [ ! -f README.template.md ]; then
+            echo "❌ Error: README.template.md not found"
+            exit 1
+          fi
+
+          # Use a different delimiter in sed (like |) to handle URLs containing slashes
+          sed -e "s|{{REPO_NAME}}|${{ github.event.repository.name }}|g" \
+              -e "s|{{REPO_URL}}|${{ github.event.repository.html_url }}|g" \
+              -e "s|{{LINKEDIN_URL}}|${{ env.LINKEDIN_URL }}|g" \
+              -e "s|{{GITHUB_USER}}|${{ github.repository_owner }}|g" \
+              README.template.md > README.md
+          
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add README.md
+          # Standard practice: check for changes before committing
+          if git diff --staged --quiet; then
+            echo "No changes to README.md"
+          else
+            git commit -m "docs: automated readme update [skip ci]"
+            git push
+          fi
