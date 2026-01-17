@@ -31,11 +31,15 @@ resource "aws_lambda_function" "rekognition_lambda" {
   tracing_config {
     mode = "Active" # Keep for observability
   }
+
+  # This ensures the IAM policy exists BEFORE the Lambda tries to use it.
+  depends_on = [
+    aws_iam_role_policy.lambda_sqs_policy
+  ]
 }
 
 # CloudWatch Log Group for Lambda
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
-  # tfsec:ignore:aws-cloudwatch-log-group-customer-key
   name              = "/aws/lambda/${aws_lambda_function.rekognition_lambda.function_name}"
   retention_in_days = 7 # optional, number of days to keep logs
   tags = {
@@ -52,12 +56,4 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   }
 
   depends_on = [aws_lambda_permission.allow_s3]
-}
-
-
-# The Dead Letter Queue
-resource "aws_sqs_queue" "lambda_dlq" {
-  name                      = "${var.project_name}-lambda-dlq"
-  message_retention_seconds = 1209600 # 14 days
-  receive_wait_time_seconds = 20      # Enable long polling (Free Tier friendly)
 }
