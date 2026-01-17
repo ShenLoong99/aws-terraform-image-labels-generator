@@ -50,18 +50,24 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
-        
-      # Run the scan and generate the SARIF report file
-      - name: Run tfsec
-        uses: aquasecurity/tfsec-sarif-action@v0.1.4
+
+      - name: Run Checkov scan
+        uses: bridgecrewio/checkov-action@master
         with:
-          sarif_file: tfsec.sarif         
+          directory: .
+          framework: terraform
+          # This allows the CI to finish even if security issues are found,
+          # so you can review them in the "Security" tab.
+          soft_fail: false
+          output_format: cli,sarif
+          output_file_path: console,results.sarif
 
       # Upload that file so GitHub can display it in the PR 'Security' tab
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v4
+        if: always() # Ensure results upload even if scan fails
         with:
-          sarif_file: tfsec.sarif
+          sarif_file: results.sarif
 
   # STEP C: EXECUTION PLAN
   # This only runs if static analysis passes
@@ -93,13 +99,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const output = `#### Terraform Plan 📖 \`${{ steps.plan.outcome }}\`
-            
+
             <details><summary>Show Plan</summary>
-            
+
             \`\`\`terraform
             ${{ steps.plan.outputs.stdout }}
             \`\`\`
-            
+
             </details>`;
 
             github.rest.issues.createComment({
