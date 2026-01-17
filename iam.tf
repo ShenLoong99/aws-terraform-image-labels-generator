@@ -12,6 +12,7 @@ resource "aws_iam_policy" "rekognition_s3_policy" {
         Resource = [aws_s3_bucket.images_bucket.arn]
       },
       {
+
         Effect   = "Allow"
         Action   = ["s3:GetObject"]
         Resource = ["${aws_s3_bucket.images_bucket.arn}/*"]

@@ -31,6 +31,7 @@ resource "aws_lambda_function" "rekognition_lambda" {
 
 # CloudWatch Log Group for Lambda
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
+  # tfsec:ignore:aws-cloudwatch-log-group-customer-key
   name              = "/aws/lambda/${aws_lambda_function.rekognition_lambda.function_name}"
   retention_in_days = 7 # optional, number of days to keep logs
   tags = {

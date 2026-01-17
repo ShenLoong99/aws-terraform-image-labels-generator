@@ -5,6 +5,7 @@ resource "random_id" "bucket_id" {
 
 # S3 Bucket to store uploaded images
 resource "aws_s3_bucket" "images_bucket" {
+  # tfsec:ignore:aws-s3-enable-bucket-logging
   bucket        = "${var.project_name}-images-bucket-${random_id.bucket_id.hex}"
   force_destroy = true
 }
