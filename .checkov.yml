@@ -6,6 +6,7 @@ skip-check:
   - CKV_AWS_173 # Check encryption for env variables (Avoids $1/mo KMS fee)
   - CKV_AWS_272 # Validate code-signing (Complex setup, unnecessary for small projects)
   - CKV_AWS_27  # Ensure SQS is encrypted (Avoids KMS monthly fees)
+  - CKV_AWS_115 # Skip AWS Lambda function is configured for function-level concurrent execution limit (Check not relevant for cost)
 
   # S3-specific skips
   - CKV_AWS_145 # S3 Default Encryption with KMS (Avoids $1/mo KMS fee)
