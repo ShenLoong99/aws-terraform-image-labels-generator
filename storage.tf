@@ -42,6 +42,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "images_bucket_lifecycle" {
 # Enable server-side encryption by default
 resource "aws_s3_bucket_server_side_encryption_configuration" "sse" {
   bucket = aws_s3_bucket.images_bucket.id
+
+  # ts:skip=aws-s3-encryption-customer-key We are using SSE-S3 to minimize project costs.
+  # tfsec:ignore:aws-s3-encryption-customer-key
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
@@ -50,25 +53,11 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "sse" {
 }
 
 # Block all public access to the bucket
-resource "aws_s3_bucket_public_access_block" "block_public_access" {
+resource "aws_s3_bucket_public_access_block" "images_bucket_access" {
   bucket = aws_s3_bucket.images_bucket.id
 
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
-
-# S3 Bucket for Access Logs (Resolves logging finding without extra cost)
-resource "aws_s3_bucket" "log_bucket" {
-  bucket        = "${var.project_name}-logs-${random_id.bucket_id.hex}"
-  force_destroy = true
-}
-
-# Maintain S3 Bucket Logging
-resource "aws_s3_bucket_logging" "images_log" {
-  bucket = aws_s3_bucket.images_bucket.id
-
-  target_bucket = aws_s3_bucket.log_bucket.id
-  target_prefix = "log/"
 }
