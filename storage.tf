@@ -5,7 +5,6 @@ resource "random_id" "bucket_id" {
 
 # S3 Bucket to store uploaded images
 resource "aws_s3_bucket" "images_bucket" {
-  # tfsec:ignore:aws-s3-enable-bucket-logging
   bucket        = "${var.project_name}-images-bucket-${random_id.bucket_id.hex}"
   force_destroy = true
 }
@@ -49,8 +48,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "images_bucket_lifecycle" {
 resource "aws_s3_bucket_server_side_encryption_configuration" "sse" {
   bucket = aws_s3_bucket.images_bucket.id
 
-  # ts:skip=aws-s3-encryption-customer-key We are using SSE-S3 to minimize project costs.
-  # tfsec:ignore:aws-s3-encryption-customer-key
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
