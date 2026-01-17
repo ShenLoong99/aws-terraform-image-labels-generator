@@ -17,3 +17,8 @@ output "lambda_role_name" {
   description = "IAM role name for Lambda"
   value       = aws_iam_role.lambda_role.name
 }
+
+output "aws_region" {
+  description = "The AWS region where resources are deployed"
+  value       = var.aws_region
+}
