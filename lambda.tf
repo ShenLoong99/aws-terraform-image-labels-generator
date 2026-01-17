@@ -23,6 +23,10 @@ resource "aws_lambda_function" "rekognition_lambda" {
       S3_BUCKET_NAME = aws_s3_bucket.images_bucket.bucket
     }
   }
+
+  tracing_config {
+    mode = "Active" # Keep for observability
+  }
 }
 
 # CloudWatch Log Group for Lambda
@@ -30,7 +34,7 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
   name              = "/aws/lambda/${aws_lambda_function.rekognition_lambda.function_name}"
   retention_in_days = 7 # optional, number of days to keep logs
   tags = {
-    Name = "${var.project_name}-lambda-role"
+    Name = "${var.project_name}-lambda-log-group"
   }
 }
 
