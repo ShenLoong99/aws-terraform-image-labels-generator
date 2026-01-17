@@ -22,7 +22,7 @@
   <h1>📷 AWS Image Labels Generator</h1>
     <img src="assets/cats-ui-output.png" alt="cats-ui-output" width="800">
     <p>
-        The <strong>AWS Image Labels Generator</strong> is a cloud-native automated solution designed to detect and catalog objects, scenes, and concepts within images. By leveraging advanced machine learning, this project allows users to upload images to a secure cloud storage environment and receive detailed metadata labels with high confidence scores. 
+        The <strong>AWS Image Labels Generator</strong> is a cloud-native automated solution designed to detect and catalog objects, scenes, and concepts within images. By leveraging advanced machine learning, this project allows users to upload images to a secure cloud storage environment and receive detailed metadata labels with high confidence scores.
         <br />
       <a href="#about-the-project"><strong>Explore the docs »</strong></a>
     </p>
@@ -179,7 +179,7 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
           </li>
         </ul>
     </li>
-    
+
 </ol>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 

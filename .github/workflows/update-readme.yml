@@ -2,7 +2,7 @@ name: "Update Documentation"
 on:
   push:
     branches: [ main ]
-    paths: 
+    paths:
       - 'README.template.md'       # Trigger when you change the layout
       - '**.tf'                    # Trigger when infrastructure outputs change
       - '.github/workflows/update-readme.yml' # Trigger when you fix the script
@@ -13,17 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     # Added permissions to ensure the GITHUB_TOKEN can push the changes back
     permissions:
-      contents: write 
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Fetch Dynamic Data
         id: data
         run: |
           # Use the GitHub API with the built-in token to avoid rate limits
           LINKEDIN=$(curl -s https://api.github.com/users/${{ github.repository_owner }}/social_accounts | jq -r '.[] | select(.url | contains("linkedin.com")) | .url')
-          
+
           # Fallback for empty social accounts
           echo "LINKEDIN_URL=${LINKEDIN:-'#'}" >> $GITHUB_ENV
 
@@ -40,12 +40,12 @@ jobs:
               -e "s|{{LINKEDIN_URL}}|${{ env.LINKEDIN_URL }}|g" \
               -e "s|{{GITHUB_USER}}|${{ github.repository_owner }}|g" \
               README.template.md > README.md
-          
+
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           git add README.md
           # Standard practice: check for changes before committing
           if git diff --staged --quiet; then
