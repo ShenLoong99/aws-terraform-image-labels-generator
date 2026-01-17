@@ -1,0 +1,16 @@
+# Use this to skip checks that incur high costs or break Free Tier eligibility
+skip-check:
+  # Lambda-specific skips
+  - CKV_AWS_116 # Ensure Lambda has DLQ (Optional, skip if you don't want SQS costs)
+  - CKV_AWS_117 # Ensure Lambda is in VPC (Avoids $32/mo NAT Gateway)
+  - CKV_AWS_173 # Check encryption for env variables (Avoids $1/mo KMS fee)
+  - CKV_AWS_272 # Validate code-signing (Complex setup, unnecessary for small projects)
+
+  # S3-specific skips
+  - CKV_AWS_145 # S3 Default Encryption with KMS (Avoids $1/mo KMS fee)
+  - CKV_AWS_18  # S3 Access Logging (Saves on request/storage costs)
+  - CKV_AWS_144 # Cross-Region Replication (Prevents doubling storage costs)
+
+  # CloudWatch-specific skips
+  - CKV_AWS_158 # CloudWatch Log Group KMS Encryption (Avoids $1/mo KMS fee)
+  - CKV_BWS_92  # Log retention 1 year (Stick to 7 days for cost optimization)
