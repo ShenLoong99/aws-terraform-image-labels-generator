@@ -6,7 +6,7 @@ on:
       - "**.tf"
       - "lambda/**"
       - ".github/workflows/cd.yml"
-      - 'tests/**'
+      - 'scripts/**'
   workflow_dispatch:
 
 jobs:
@@ -106,14 +106,14 @@ jobs:
 
       - name: Test Lambda Function
         run: |
-          chmod +x ./tests/verify-lambda.sh
-          ./tests/verify-lambda.sh
+          chmod +x ./scripts/verify-lambda.sh
+          ./scripts/verify-lambda.sh
         env:
           FUNCTION_NAME: ${{ env.FUNCTION_NAME }}
 
       - name: Test IAM Role Attachment
         run: |
-          chmod +x ./tests/verify-role.sh
-          ./tests/verify-role.sh
+          chmod +x ./scripts/verify-role.sh
+          ./scripts/verify-role.sh
         env:
           FUNCTION_NAME: ${{ env.FUNCTION_NAME }}
