@@ -13,6 +13,7 @@ jobs:
   # Detect what changed
   detect-changes:
     runs-on: ubuntu-latest
+    environment: prod
     outputs:
       infra: ${{ steps.filter.outputs.infra }}
     steps:
