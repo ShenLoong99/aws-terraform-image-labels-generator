@@ -8,8 +8,13 @@ from PIL import Image
 from io import BytesIO
 
 # Configure logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%H:%M:%S',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger("ImageLabeler")
 
 def load_config():
     # This reads the file Terraform just created
