@@ -94,10 +94,6 @@
   <li><strong>Analysis:</strong> Rekognition performs label detection and returns the results to the Lambda function.</li>
   <li><strong>Logging:</strong> Results and confidence scores are streamed to Amazon CloudWatch Logs for real-time monitoring.</li>
 </ol>
-
-## Technical Reference
-This section is automatically updated with the latest infrastructure details.
-
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="file-structure">File Structure</h2>
@@ -439,6 +435,23 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
   <li><strong>Log Retention:</strong> Added a CloudWatch Log Group with a 7-day retention policy to avoid long-term storage costs for test logs.</li>
 </ul>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
+
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>
+  Special thanks to <strong>Tech with Lucy</strong> for the architectural inspiration and excellent AWS tutorials that helped shape this pipeline.
+</p>
+<ul>
+  <li>
+    See her youtube channel here: <a href="https://www.youtube.com/@TechwithLucy" target="_blank">Tech With Lucy</a>
+  </li>
+  <li>
+    Watch her video here: <a href="https://www.youtube.com/watch?v=0hJxcBdRlYw" target="_blank">5 Intermediate AWS Cloud Projects To Get You Hired (2025)</a>
+  </li>
+</ul>
+<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
+
+## Technical Reference
+This section is automatically updated with the latest infrastructure details.
 
 [contributors-shield]: https://img.shields.io/github/contributors/{{GITHUB_USER}}/{{REPO_NAME}}.svg?style=for-the-badge
 [contributors-url]: {{REPO_URL}}/graphs/contributors

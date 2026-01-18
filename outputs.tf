@@ -22,3 +22,8 @@ output "aws_region" {
   description = "The AWS region where resources are deployed"
   value       = var.aws_region
 }
+
+output "developer_access_key_id" {
+  description = "Access key ID for the developer IAM user"
+  value       = aws_iam_access_key.project_user_key.id
+}

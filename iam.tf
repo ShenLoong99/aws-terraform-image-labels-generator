@@ -1,3 +1,37 @@
+# Create the IAM Group for the project
+resource "aws_iam_group" "developer_group" {
+  name = "${var.project_name}-developer-group"
+}
+
+# Add the IAM User to the Group
+resource "aws_iam_group_membership" "developer_team" {
+  name = "${var.project_name}-group-membership"
+
+  users = [
+    aws_iam_user.project_user.name
+  ]
+
+  group = aws_iam_group.developer_group.name
+}
+
+# IAM User for Developer
+resource "aws_iam_user" "project_user" {
+  name = "${var.project_name}-developer-user"
+  tags = {
+    Name = "${var.project_name}-user"
+  }
+}
+
+# Attach the Policies to the GROUP (instead of the user)
+resource "aws_iam_group_policy_attachment" "group_attach" {
+  for_each = toset([
+    aws_iam_policy.rekognition_s3_policy.arn,
+    aws_iam_policy.rekognition_policy.arn
+  ])
+  group      = aws_iam_group.developer_group.name
+  policy_arn = each.value
+}
+
 # S3 policy for Rekognition access
 resource "aws_iam_policy" "rekognition_s3_policy" {
   name        = "${var.project_name}-s3-policy"
@@ -65,4 +99,25 @@ resource "aws_iam_role" "lambda_role" {
   tags = {
     Name = "${var.project_name}-lambda-role"
   }
+}
+
+# This generates the keys you will put in your local terminal
+resource "aws_iam_access_key" "project_user_key" {
+  user = aws_iam_user.project_user.name
+}
+
+# Store the Keys in AWS Secrets Manager instead of Outputs
+resource "aws_secretsmanager_secret" "dev_keys" {
+  name                    = "${var.project_name}-dev-credentials-new" # Use unique name
+  description             = "IAM Access Keys for local Rekognition script"
+  recovery_window_in_days = 0 # Forces immediate deletion if destroyed
+}
+
+# Store the secret values
+resource "aws_secretsmanager_secret_version" "dev_keys_val" {
+  secret_id = aws_secretsmanager_secret.dev_keys.id
+  secret_string = jsonencode({
+    access_key = aws_iam_access_key.project_user_key.id
+    secret_key = aws_iam_access_key.project_user_key.secret
+  })
 }
