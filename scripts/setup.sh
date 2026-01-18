@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Setting up Local Environment..."
+echo "--- Starting Local Environment Setup ---"
 
 # 1. Install Python dependencies
 pip install boto3 matplotlib Pillow
@@ -8,7 +8,7 @@ pip install boto3 matplotlib Pillow
 if ! command -v aws &> /dev/null
 then
     echo "AWS CLI not found. Please install it first."
-    exit
+    exit 1
 fi
 
-echo "Setup Complete. Run 'terraform apply' then 'python detect_labels.py'"
+echo "--- Setup Complete ---"
