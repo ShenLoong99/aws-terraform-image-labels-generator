@@ -13,16 +13,6 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
   }
 }
 
-# Local file to store configuration for Lambda
-resource "local_file" "python_config" {
-  filename = "${path.module}/config.json"
-  content = jsonencode({
-    secret_id   = aws_secretsmanager_secret.dev_keys.name
-    region      = var.aws_region
-    bucket_name = aws_s3_bucket.images_bucket.bucket
-  })
-}
-
 # Execute setup script after S3 bucket creation
 resource "terraform_data" "setup_script" {
   # This ensures the script runs AFTER the bucket is created
