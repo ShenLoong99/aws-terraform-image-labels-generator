@@ -12,6 +12,7 @@ skip-check:
   - CKV_AWS_145 # S3 Default Encryption with KMS (Avoids $1/mo KMS fee)
   - CKV_AWS_18  # S3 Access Logging (Saves on request/storage costs)
   - CKV_AWS_144 # Cross-Region Replication (Prevents doubling storage costs)
+  - CKV2_AWS_62 # Ensure S3 buckets should have event notifications enabled (Ensure lambda triggers are local intentionally)
 
   # CloudWatch-specific skips
   - CKV_AWS_158 # CloudWatch Log Group KMS Encryption (Avoids $1/mo KMS fee)

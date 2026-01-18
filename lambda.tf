@@ -16,6 +16,11 @@ resource "aws_lambda_function" "rekognition_lambda" {
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   handler          = "detect_labels.lambda_handler"
 
+  # Enable X-Ray Tracing for the Lambda function
+  tracing_config {
+    mode = "Active"
+  }
+
   environment {
     variables = {
       S3_BUCKET_NAME = aws_s3_bucket.images_bucket.bucket
