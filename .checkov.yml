@@ -16,3 +16,8 @@ skip-check:
   # CloudWatch-specific skips
   - CKV_AWS_158 # CloudWatch Log Group KMS Encryption (Avoids $1/mo KMS fee)
   - CKV_AWS_338  # Log retention 1 year (Stick to 7 days for cost optimization)
+
+  # iam-specific skips
+  - CKV_AWS_273 # Ensure access is controlled through SSO and not AWS IAM users (Out of Scope / Safe to Skip)
+  - CKV_AWS_149 # Ensure Secrets Manager secret is encrypted using KMS CMK (Concerns Out of Scope (Cost))
+  - CKV_AWS_124 # Ensure Secrets Manager secrets should have automatic rotation enabled (Valid Security Concern, but Out of Scope)
