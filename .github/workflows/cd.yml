@@ -59,9 +59,16 @@ jobs:
           role-to-assume: arn:aws:iam::871308866502:role/GitHubActionRole
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Run Verification Script
+      - name: Test Lambda Function
         run: |
           chmod +x ./tests/verify-lambda.sh
           ./tests/verify-lambda.sh
+        env:
+          FUNCTION_NAME: ${{ env.FUNCTION_NAME }}
+
+      - name: Test IAM Role Attachment
+        run: |
+          chmod +x ./tests/verify-role.sh
+          ./tests/verify-role.sh
         env:
           FUNCTION_NAME: ${{ env.FUNCTION_NAME }}
