@@ -22,3 +22,6 @@ skip-check:
   - CKV_AWS_273 # Ensure access is controlled through SSO and not AWS IAM users (Out of Scope / Safe to Skip)
   - CKV_AWS_149 # Ensure Secrets Manager secret is encrypted using KMS CMK (Concerns Out of Scope (Cost))
   - CKV2_AWS_57 # Ensure Secrets Manager secrets should have automatic rotation enabled (Valid Security Concern, but Out of Scope)
+
+  # SSM specific skips
+  - CKV_AWS_337 # Ensure SSM Parameters are encrypted using KMS CMK (Avoids $1/mo KMS fee)
