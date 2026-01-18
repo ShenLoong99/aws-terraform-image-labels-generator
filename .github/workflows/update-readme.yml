@@ -25,8 +25,11 @@ jobs:
       # Mark the directory as safe and take ownership
       - name: Fix permissions and Git trust
         run: |
-          git config --global --add safe.directory /github/workspace
-          sudo chown -R runner:docker .
+          # Force ownership of the entire workspace to the current user
+          sudo chown -R $USER:$USER .
+
+          # Tell Git to trust the workspace directory to bypass security checks
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       # Build README from Template
       - name: Generate README from Template
@@ -50,13 +53,14 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Force refresh the index to prevent 'insufficient permission'
-          git update-index --refresh || true
+          # Force a refresh of the index to clear any locks
+          git update-index -q --refresh
 
           git add README.md
           if git diff --staged --quiet; then
             echo "No changes to README.md"
           else
             git commit -m "docs: automated readme update [skip ci]"
+            # Use origin + branch name for more explicit push
             git push origin main
           fi
