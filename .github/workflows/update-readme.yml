@@ -23,13 +23,13 @@ jobs:
           ref: ${{ github.head_ref || github.ref_name }}
 
       # Mark the directory as safe and take ownership
-      - name: Fix permissions and Git trust
-        run: |
-          # Force ownership of the entire workspace to the current user
-          sudo chown -R $USER:$USER .
+      # - name: Fix permissions and Git trust
+      #   run: |
+      #     # Force ownership of the entire workspace to the current user
+      #     sudo chown -R $USER:$USER .
 
-          # Tell Git to trust the workspace directory to bypass security checks
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      #     # Tell Git to trust the workspace directory to bypass security checks
+      #     git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       # Build README from Template
       - name: Generate README from Template
@@ -50,17 +50,19 @@ jobs:
       # Commit and Push with improved error handling
       - name: Commit and Push Changes
         run: |
+          # CRITICAL: Reclaim ownership of all files from 'root' to 'runner'
+          sudo chown -R $USER:$USER .
+
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Force a refresh of the index to clear any locks
-          git update-index -q --refresh
+          # Mark the directory as safe for the current user
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
           git add README.md
           if git diff --staged --quiet; then
             echo "No changes to README.md"
           else
             git commit -m "docs: automated readme update [skip ci]"
-            # Use origin + branch name for more explicit push
             git push origin main
           fi
