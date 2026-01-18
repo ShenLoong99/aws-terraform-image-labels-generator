@@ -25,6 +25,11 @@ jobs:
               - '**.tf'
               - 'lambda/**'
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
       # Check if there is anything actually deployed in Terraform Cloud
       - name: Check Terraform State
         id: check-state
