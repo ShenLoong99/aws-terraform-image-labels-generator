@@ -26,24 +26,27 @@ def load_config():
         sys.exit(1)
 
 def get_automated_session():
-    # Pulls region from config.json
     config = load_config()
-    logger.info(f"Fetching credentials from Secrets Manager: {config['secret_id']}")
+    logger.info("Retrieving keys from SSM Parameter Store...")
+
+    # Initialize SSM client
+    ssm = boto3.client('ssm', region_name=config['region'])
 
     try:
-        temp_client = boto3.client('secretsmanager', region_name=config['region'])
-        response = temp_client.get_secret_value(SecretId=config['secret_id'])
-        keys = json.loads(response['SecretString'])
+        # Fetch the keys using the paths from config.json
+        # WithDecryption=True is required for SecureString
+        access_key = ssm.get_parameter(Name=config['access_key_path'], WithDecryption=True)['Parameter']['Value']
+        secret_key = ssm.get_parameter(Name=config['secret_key_path'], WithDecryption=True)['Parameter']['Value']
 
-        logger.info("Successfully retrieved developer credentials.")
+        logger.info("✅ Successfully retrieved keys from SSM.")
         return boto3.Session(
-            aws_access_key_id=keys['access_key'],
-            aws_secret_access_key=keys['secret_key'],
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
             region_name=config['region']
         )
     except Exception as e:
-        logger.error(f"Failed to retrieve secrets: {str(e)}")
-        raise
+        logger.error(f"❌ Failed to retrieve parameters: {str(e)}")
+        sys.exit(1)
 
 def run_analysis(BUCKET_NAME, IMAGE_NAME):
     logger.info(f"Starting analysis for image: {IMAGE_NAME} in bucket: {BUCKET_NAME}")

@@ -23,12 +23,10 @@ output "aws_region" {
   value       = var.aws_region
 }
 
-output "developer_access_key_id" {
-  description = "Access key ID for the developer IAM user"
-  value       = aws_iam_access_key.project_user_key.id
+output "access_key_path" {
+  value = aws_ssm_parameter.access_key.name
 }
 
-output "secret_name" {
-  value       = aws_secretsmanager_secret.dev_keys.name
-  description = "The name of the secret in Secrets Manager for the Python script"
+output "secret_key_path" {
+  value = aws_ssm_parameter.secret_key.name
 }
