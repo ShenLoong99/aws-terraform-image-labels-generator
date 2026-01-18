@@ -30,6 +30,6 @@ resource "terraform_data" "setup_script" {
 
   provisioner "local-exec" {
     # Automates the chmod and execution steps
-    command = "chmod +x ${path.module}/setup.sh && ${path.module}/setup.sh"
+    command = "chmod +x ${path.module}/scripts/setup.sh && ${path.module}/scripts/setup.sh"
   }
 }
