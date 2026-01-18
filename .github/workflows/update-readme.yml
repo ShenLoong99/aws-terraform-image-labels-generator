@@ -16,6 +16,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Ensure we check out the actual branch, not a detached HEAD
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      # Ensure the runner owns all files before git operations
+      - name: Fix directory permissions
+        run: sudo chown -R runner:docker .
 
       # Existing Step: Build README from Template
       - name: Generate README from Template
@@ -25,7 +32,7 @@ jobs:
               -e "s|{{GITHUB_USER}}|${{ github.repository_owner }}|g" \
               README.template.md > README.md
 
-      # NEW STEP: Inject Terraform technical details into the newly created README.md
+      # Inject Terraform technical details into the newly created README.md
       - name: Render terraform docs
         uses: terraform-docs/gh-actions@v1.4.1
         with:
@@ -33,7 +40,7 @@ jobs:
           output-file: README.md
           output-method: inject
 
-      # Existing Step: Commit and Push
+      # Commit and Push
       # This now pushes both your template changes AND the auto-generated TF tables
       - name: Commit and Push Changes
         run: |
