@@ -10,8 +10,26 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Detect what changed
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      infra: ${{ steps.filter.outputs.infra }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            infra:
+              - '**.tf'
+              - 'lambda/**'
+
   # Wait for Terraform Cloud to complete the VCS-triggered run
   terraform-cloud-wait:
+    needs: detect-changes
+    # ONLY run this if the 'infra' filter found changes
+    if: needs.detect-changes.outputs.infra == 'true'
     runs-on: ubuntu-latest
     environment: prod
     steps:
@@ -28,7 +46,12 @@ jobs:
 
   # Post-Deployment Verification
   post-deploy:
-    needs: terraform-cloud-wait
+    # This runs if TFC-wait was successful OR if it was skipped
+    needs: [detect-changes, terraform-cloud-wait]
+    if: |
+      always() &&
+      (needs.terraform-cloud-wait.result == 'success' || needs.terraform-cloud-wait.result == 'skipped') &&
+      github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: prod
     permissions:
