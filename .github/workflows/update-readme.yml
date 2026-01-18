@@ -17,14 +17,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          # Use persist-credentials to ensure the token is available for the push
+          persist-credentials: true
           # Ensure we check out the actual branch, not a detached HEAD
           ref: ${{ github.head_ref || github.ref_name }}
 
-      # Ensure the runner owns all files before git operations
-      - name: Fix directory permissions
-        run: sudo chown -R runner:docker .
+      # Mark the directory as safe and take ownership
+      - name: Fix permissions and Git trust
+        run: |
+          git config --global --add safe.directory /github/workspace
+          sudo chown -R runner:docker .
 
-      # Existing Step: Build README from Template
+      # Build README from Template
       - name: Generate README from Template
         run: |
           sed -e "s|{{REPO_NAME}}|${{ github.event.repository.name }}|g" \
@@ -40,16 +44,19 @@ jobs:
           output-file: README.md
           output-method: inject
 
-      # Commit and Push
-      # This now pushes both your template changes AND the auto-generated TF tables
+      # Commit and Push with improved error handling
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Force refresh the index to prevent 'insufficient permission'
+          git update-index --refresh || true
+
           git add README.md
           if git diff --staged --quiet; then
             echo "No changes to README.md"
           else
             git commit -m "docs: automated readme update [skip ci]"
-            git push
+            git push origin main
           fi
