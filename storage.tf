@@ -64,3 +64,9 @@ resource "aws_s3_bucket_public_access_block" "images_bucket_access" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+# Enable S3 Server Access Logging
+resource "aws_s3_bucket_metric" "bucket_logging" {
+  bucket = aws_s3_bucket.images_bucket.id
+  name   = "EntireBucket"
+}
