@@ -22,15 +22,6 @@ jobs:
           # Ensure we check out the actual branch, not a detached HEAD
           ref: ${{ github.head_ref || github.ref_name }}
 
-      # Mark the directory as safe and take ownership
-      # - name: Fix permissions and Git trust
-      #   run: |
-      #     # Force ownership of the entire workspace to the current user
-      #     sudo chown -R $USER:$USER .
-
-      #     # Tell Git to trust the workspace directory to bypass security checks
-      #     git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
       # Build README from Template
       - name: Generate README from Template
         run: |
