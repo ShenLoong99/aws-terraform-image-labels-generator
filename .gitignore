@@ -45,3 +45,6 @@ terraform.rc
 
 # Ignore zipped lambda functions
 *.zip
+
+# Ignore local config file
+config.json
