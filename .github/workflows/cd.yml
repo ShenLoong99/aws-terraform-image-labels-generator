@@ -25,6 +25,19 @@ jobs:
               - '**.tf'
               - 'lambda/**'
 
+      # Check if there is anything actually deployed in Terraform Cloud
+      - name: Check Terraform State
+        id: check-state
+        run: |
+          terraform init
+          # If 'state list' is empty, it returns nothing
+          if [ -z "$(terraform state list)" ]; then
+            echo "has_state=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_state=true" >> $GITHUB_OUTPUT
+        env:
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+
   # Wait for Terraform Cloud to complete the VCS-triggered run
   terraform-cloud-wait:
     needs: detect-changes
@@ -50,8 +63,8 @@ jobs:
     needs: [detect-changes, terraform-cloud-wait]
     if: |
       always() &&
-      (needs.terraform-cloud-wait.result == 'success' || needs.terraform-cloud-wait.result == 'skipped') &&
-      github.event_name != 'pull_request'
+      needs.detect-changes.outputs.has_state == 'true' &&
+      (needs.terraform-cloud-wait.result == 'success' || needs.terraform-cloud-wait.result == 'skipped')
     runs-on: ubuntu-latest
     environment: prod
     permissions:
