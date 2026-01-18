@@ -94,6 +94,10 @@
   <li><strong>Analysis:</strong> Rekognition performs label detection and returns the results to the Lambda function.</li>
   <li><strong>Logging:</strong> Results and confidence scores are streamed to Amazon CloudWatch Logs for real-time monitoring.</li>
 </ol>
+
+## Technical Reference
+This section is automatically updated with the latest infrastructure details.
+
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="file-structure">File Structure</h2>
@@ -452,7 +456,7 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
 [license-url]: {{REPO_URL}}/blob/master/LICENSE.txt
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: {{LINKEDIN_URL}}
+[linkedin-url]: https://www.linkedin.com/in/si-kai-tan/
 
 [ci-shield]: https://github.com/{{GITHUB_USER}}/{{REPO_NAME}}/actions/workflows/ci.yml/badge.svg
 [ci-url]: https://github.com/{{GITHUB_USER}}/{{REPO_NAME}}/actions/workflows/ci.yml
