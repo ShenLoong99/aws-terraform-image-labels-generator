@@ -65,16 +65,6 @@ jobs:
           commit_sha: ${{ github.sha }}
           branch: "main"
 
-  test-deployment:
-    needs: [detect-changes, terraform-cloud-wait]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug Workflow Variables
-        run: |
-          echo "Output from detect-changes (infra): ${{ needs.detect-changes.outputs.infra }}"
-          echo "Output from detect-changes (has_state): ${{ needs.detect-changes.outputs.has_state }}"
-          echo "Result of terraform-cloud-wait: ${{ needs.terraform-cloud-wait.result }}"
-
   # Post-Deployment Verification
   post-deploy:
     # This runs if TFC-wait was successful OR if it was skipped

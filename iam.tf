@@ -101,23 +101,25 @@ resource "aws_iam_role" "lambda_role" {
   }
 }
 
-# This generates the keys you will put in your local terminal
-resource "aws_iam_access_key" "project_user_key" {
-  user = aws_iam_user.project_user.name
-}
+# Update the IAM Policy to allow SSM access
+resource "aws_iam_policy" "ssm_policy" {
+  name        = "${var.project_name}-ssm-policy"
+  description = "Allows reading developer keys from SSM Parameter Store"
 
-# Store the Keys in AWS Secrets Manager instead of Outputs
-resource "aws_secretsmanager_secret" "dev_keys" {
-  name                    = "${var.project_name}-dev-credentials-new" # Use unique name
-  description             = "IAM Access Keys for local Rekognition script"
-  recovery_window_in_days = 0 # Forces immediate deletion if destroyed
-}
-
-# Store the secret values
-resource "aws_secretsmanager_secret_version" "dev_keys_val" {
-  secret_id = aws_secretsmanager_secret.dev_keys.id
-  secret_string = jsonencode({
-    access_key = aws_iam_access_key.project_user_key.id
-    secret_key = aws_iam_access_key.project_user_key.secret
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ]
+        Effect = "Allow"
+        Resource = [
+          aws_ssm_parameter.access_key.arn,
+          aws_ssm_parameter.secret_key.arn
+        ]
+      }
+    ]
   })
 }
