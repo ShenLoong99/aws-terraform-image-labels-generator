@@ -16,6 +16,7 @@ jobs:
     environment: prod
     outputs:
       infra: ${{ steps.filter.outputs.infra }}
+      has_state: ${{ steps.check-state.outputs.has_state }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -39,10 +40,8 @@ jobs:
           # If 'state list' is empty, it returns nothing
           if [ -z "$(terraform state list)" ]; then
             echo "has_state=false" >> $GITHUB_OUTPUT
-            echo "No resources found in Terraform state."
           else
             echo "has_state=true" >> $GITHUB_OUTPUT
-            echo "Resources exist in Terraform state."
           fi
         env:
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
@@ -81,8 +80,7 @@ jobs:
     # This runs if TFC-wait was successful OR if it was skipped
     needs: [detect-changes, terraform-cloud-wait]
     if: |
-      always() &&
-      needs.detect-changes.outputs.has_state == 'true' &&
+      always() && !cancelled() &&
       (needs.terraform-cloud-wait.result == 'success' || needs.terraform-cloud-wait.result == 'skipped')
     runs-on: ubuntu-latest
     environment: prod
