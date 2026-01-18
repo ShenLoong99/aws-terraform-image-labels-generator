@@ -41,6 +41,7 @@ jobs:
             echo "has_state=false" >> $GITHUB_OUTPUT
           else
             echo "has_state=true" >> $GITHUB_OUTPUT
+          fi
         env:
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
 
