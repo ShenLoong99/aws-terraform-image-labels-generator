@@ -37,6 +37,7 @@ jobs:
           working-dir: .
           output-file: README.md
           output-method: inject
+          args: --header-level=4
 
       # Format README using Prettier
       - name: Format README
