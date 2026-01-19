@@ -42,13 +42,13 @@
     <li><a href="#use-cases">Use Cases</a></li>
     <li><a href="#architecture">Architecture</a></li>
     <li><a href="#file-structure">File Structure</a></li>
+    <li><a href="#technical">Technical Reference</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#gitops">GitOps & CI/CD Workflow</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#challenges-faced">Challenges</a></li>
     <li><a href="#cost-optimization">Cost Optimization</a></li>
-    <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
 </details>
@@ -107,11 +107,45 @@
   <li><strong>Local Analysis:</strong> User runs <code>detect_labels.py</code>. It reads <code>config.json</code>, fetches the image from S3, and calls Rekognition.</li>
   <li><strong>Health Monitoring:</strong> CloudWatch tracks Lambda execution and S3 metrics to ensure the system is healthy.</li>
 </ol>
+<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
-### Technical Reference
+<h2 id="file-structure">File Structure</h2>
+<pre>aws-terraform-image-labels-generator
+├── .github/workflows/          # GitHub Actions CI/CD workflows
+│   ├── ci.yml                  # CI: Lints, formats, and validates Terraform code
+│   ├── update-readme.yml       # Auto-updates README with terraform-docs
+│   └── cd.yml                  # Production deployment & verification
+├── assets/                     # Architecture diagrams and UI screenshots
+├── lambda/                     # Backend Logic
+│   └── detect_labels.py        # Python script (Runs locally and in AWS)
+│   └── function.zip            # Optimized deployment package, less than 1KB
+├── scripts/                    # Automation Tooling
+│   ├── setup.sh                # Initial local environment setup
+│   ├── sync-config.sh          # Fetches SecureStrings from SSM to config.json
+│   ├── verify-role.sh          # Post-deployment lambda role check
+│   └── verify-lambda.sh        # Post-deployment lambda function name check
+├── .checkov.yml                # List of rules to skip in Checkov analysis
+├── .terraform.lock.hcl         # Ensures consistent provider versions across environments
+├── .gitignore                  # Prevents config.json & .tfstate from being pushed
+├── .pre-commit-config.yml      # Runs a series of checks (hooks) locally before every git commit
+├── .tflint.hcl                 # Configuration for TFLint
+├── config.json                 # Dynamic configuration of bucket names and IAM keys fetched from AWS SSM by sync-config.sh script
+├── iam.tf                      # IAM Users, Groups, and Permissions
+├── lambda.tf                   # Lambda function and ZIP configuration
+├── main.tf                     # S3 cloudwatch error metric
+├── outputs.tf                  # Exported ARNs and Names for GitOps
+├── providers.tf                # AWS & Archive provider configurations
+├── variables.tf                # Input variables for AWS Region and resource tagging
+├── ssm.tf                      # SSM Parameter Store secure key management
+├── storage.tf                  # S3 bucket configuration
+├── variables.tf                # Project-wide input variables
+├── README.template.md          # Manual documentation source
+└── README.md                   # Auto-generated final documentation
+</pre>
+<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
+<h2 id="technical">Technical Reference</h2>
 This section is automatically updated with the latest infrastructure details.
-
 <details>
 <summary><b>Detailed Infrastructure Specifications</b></summary>
 
@@ -188,42 +222,6 @@ No modules.
 
 <!-- END_TF_DOCS -->
 </details>
-<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
-
-<h2 id="file-structure">File Structure</h2>
-<pre>aws-terraform-image-labels-generator
-├── .github/workflows/          # GitHub Actions CI/CD workflows
-│   ├── ci.yml                  # CI: Lints, formats, and validates Terraform code
-│   ├── update-readme.yml       # Auto-updates README with terraform-docs
-│   └── cd.yml                  # Production deployment & verification
-├── assets/                     # Architecture diagrams and UI screenshots
-├── lambda/                     # Backend Logic
-│   └── detect_labels.py        # Python script (Runs locally and in AWS)
-│   └── function.zip            # Optimized deployment package, less than 1KB
-├── scripts/                    # Automation Tooling
-│   ├── setup.sh                # Initial local environment setup
-│   ├── sync-config.sh          # Fetches SecureStrings from SSM to config.json
-│   ├── verify-role.sh          # Post-deployment lambda role check
-│   └── verify-lambda.sh        # Post-deployment lambda function name check
-├── .checkov.yml                # List of rules to skip in Checkov analysis
-├── .terraform.lock.hcl         # Ensures consistent provider versions across environments
-├── .gitignore                  # Prevents config.json & .tfstate from being pushed
-├── .pre-commit-config.yml      # Runs a series of checks (hooks) locally before every git commit
-├── .tflint.hcl                 # Configuration for TFLint
-├── config.json                 # Dynamic configuration of bucket names and IAM keys fetched from AWS SSM by sync-config.sh script
-├── iam.tf                      # IAM Users, Groups, and Permissions
-├── lambda.tf                   # Lambda function and ZIP configuration
-├── main.tf                     # S3 cloudwatch error metric
-├── outputs.tf                  # Exported ARNs and Names for GitOps
-├── providers.tf                # AWS & Archive provider configurations
-├── variables.tf                # Input variables for AWS Region and resource tagging
-├── ssm.tf                      # SSM Parameter Store secure key management
-├── storage.tf                  # S3 bucket configuration
-├── variables.tf                # Project-wide input variables
-├── README.template.md          # Manual documentation source
-└── README.md                   # Auto-generated final documentation
-</pre>
-<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="getting-started">Getting Started</h2>
 <h3>Prerequisites</h3>
@@ -285,7 +283,7 @@ No modules.
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="gitops">GitOps & CI/CD Workflow</h2>
-<p>This project uses a fully automated GitOps pipeline to ensure code quality and deployment reliability. The **Pre-commit** framework implements a "Shift-Left" strategy, ensuring that code is formatted, documented, and secure before it ever leaves your machine.</p>
+<p>This project uses a fully automated GitOps pipeline to ensure code quality and deployment reliability. The <strong>Pre-commit</strong> framework implements a "Shift-Left" strategy, ensuring that code is formatted, documented, and secure before it ever leaves your machine.</p>
 
 <h3>Workflow Files</h3>
 <ol>
@@ -432,7 +430,7 @@ No modules.
         <tr>
           <td><strong>Local Environment Parity</strong></td>
           <td>
-            Pre-commit hooks failed locally due to missing system binaries (Checkov/Terraform-docs).
+            Pre-commit hooks failed locally due to missing system binaries (<code>Checkov</code>/<code>terraform-docs</code>).
           </td>
         </tr>
     </tbody>
