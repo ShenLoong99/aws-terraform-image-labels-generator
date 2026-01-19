@@ -10,7 +10,7 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 <h1>📷 AWS Image Labels Generator</h1>
-<img src="assets/cover-image.jpg" alt="cover-image">
+<img src="assets/cover-image.jpg" alt="cover-image" />
 
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
@@ -96,7 +96,7 @@
 
 <h2 id="architecture">Architecture</h2>
 <p align="center">
-  <img src="assets/AWS-Image-Labels-Generator.jpg" alt="Architecture Diagram">
+  <img src="assets/AWS-Image-Labels-Generator.jpg" alt="Architecture Diagram" />
 </p>
 <p>
   The system follows a serverless-inspired architecture to ensure scalability and cost-efficiency:
@@ -112,7 +112,9 @@
 This section is automatically updated with the latest infrastructure details.
 <details>
 <summary><b>Detailed Infrastructure Specifications</b></summary>
-
+<!-- BEGIN_TF_DOCS -->
+{{ .Content }}
+<!-- END_TF_DOCS -->
 </details>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
@@ -207,57 +209,66 @@ This section is automatically updated with the latest infrastructure details.
         <strong>Observe workflow:</strong><br>
         <strong>GitHub (GitOps)</strong> → <strong>Github actions:</strong> Observe the process/workflow of CI/CD in the actions tab in GitHub.
     </li>
-    <li>
-        <strong>Run the scripts to sync configuration locally:</strong><br>
-        <pre>bash ./scripts/sync-config.sh</pre>
-    </li>
 </ol>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="gitops">GitOps & CI/CD Workflow</h2>
+<p>This project uses a fully automated GitOps pipeline to ensure code quality and deployment reliability. The **Pre-commit** framework implements a "Shift-Left" strategy, ensuring that code is formatted, documented, and secure before it ever leaves your machine.</p>
 
-This project uses a fully automated GitOps pipeline to ensure code quality and deployment reliability. The **Pre-commit** framework implements a "Shift-Left" strategy, ensuring that code is formatted, documented, and secure before it ever leaves your machine.
+<h3>Workflow Files</h3>
+<ol>
+  <li>
+    <strong>Pre-commit</strong>
+    <ul>
+      <li><strong>Tool:</strong> Executes <code>terraform fmt</code>, <code>terraform validate</code>, <code>TFLint</code>, <code>terraform_docs</code> and <code>checkov</code> to ensure the code is clean.</li>
+      <li><strong>Trigger:</strong> Runs on every <strong>git commit</strong>.</li>
+      <li>
+        <strong>Outcome:</strong> If any check fails, the commit is blocked. You fix the error, re-add the file, and commit again.<br>
+        <img src="assets/pre-commit-logs.png" alt="pre-commit-logs" />
+      </li>
+    </ul>
+  </li>
+  <li>
+    <strong>Continuous Integration (PR)</strong>
+    <ul>
+      <li><strong>Tool:</strong> Executes <code>terraform fmt -check</code>, <code>terraform validate</code> and <code>checkov</code>, then do <code>plan</code> and cost estimation and print it on PR.</li>
+      <li><strong>Trigger:</strong> Runs on every <strong>Pull Request</strong>.</li>
+      <li>
+        <strong>Outcome:</strong> This acts as the "Gatekeeper" before code is merged to <code>main</code>.<br>
+        <img src="assets/github-ci-static-analysis-logs.png" alt="github-ci-static-analysis-logs" />
+        <img src="assets/github-ci-plan-post-PR-logs.png" alt="github-ci-plan-post-PR-logs" />
+      </li>
+    </ul>
+  </li>
+  <li>
+    <strong>Continuous Delivery (Deployment)</strong>
+    <ul>
+      <li><strong>Tool:</strong> Terraform Cloud + GitHub Actions OIDC.</li>
+      <li><strong>Trigger:</strong> Merges to the <code>main</code> branch.</li>
+      <li>
+        <strong>Outcome:</strong> The pipeline verifies the infrastructure state and runs a post-deployment health check (<code>verify-lambda.sh</code> & <code>verify-role.sh</code>) to confirm the Rekognition service is responding.<br>
+        <img src="assets/github-action-deployment-wait-tfc-apply-workflow-logs.png" alt="github-action-deployment-wait-tfc-apply-workflow-logs" />
+        <img src="assets/github-action-post-deployment-workflow-logs.png" alt="github-action-post-deployment-workflow-logs" />
+      </li>
+    </ul>
+  </li>
+</ol>
 
-### Workflow Files
-
-#### 1. Pre-commit
-* **Tool:** Executes `terraform fmt`, `terraform validate` and `TFLint` to ensure the code is clean.
-* **Trigger:** Runs on every **git commit**.
-* **Outcome:** If any check fails, the commit is blocked. You fix the error, re-add the file, and commit again.
-
-#### 2. Continuous Integration (PR)
-* **Tool:** Executes `terraform fmt -check`, `terraform validate` and `Checkov` to ensure the code is clean.
-* **Trigger:** Runs on every **Pull Request**.
-* **Outcome:** This acts as the "Gatekeeper" before code is merged to `main`
-
-#### 3. Continuous Delivery (Deployment)
-* **Tool:** Terraform Cloud + GitHub Actions OIDC
-* **Trigger:** Merges to the `main` branch.
-* **Outcome:** The pipeline verifies the infrastructure state and runs a post-deployment health check (`verify-lambda.sh`) to confirm the Rekognition service is responding.
-
-#### 4. update-readme.yml (Documentation-as-Code):
-* **Tool:** `terraform-docs/gh-actions`
-* **Trigger:** Any change to `.tf` files or `README.template.md`.
-* **Outcome:** Technical tables for **Inputs**, **Outputs**, and **Resources** are automatically injected between specific markers in the README, preventing documentation drift.
-
-### Prerequisites for GitOps
-* **Secret: `TF_API_TOKEN`**: Required for GitHub to communicate with Terraform Cloud.
-* **IAM Role**: A GitHub Actions OIDC role (`GitHubActionRole`) allows the runner to verify AWS resources without long-lived keys.
-
-### Benefits
-* **Zero Drift**: Your documentation always matches your code because it is updated at the moment of the commit.
-* **Cleaner Pull Requests**: Reviewers don't waste time pointing out formatting errors or simple syntax mistakes.
-* **Security by Default**: You cannot accidentally commit a public S3 bucket because Checkov will block the commit locally.
-* **Consistency**: The `README` always reflects the exact state of the infrastructure.
-* **Security**: No AWS keys are stored in GitHub; we use temporary OIDC tokens and SSM Parameter Store for local development.
-* **Reliability**: `post-deploy` checks ensure the Lambda is actually functional before marking a release as "Success".
-<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
+<h3>Prerequisites for GitOps</h3>
+<ul>
+  <li><strong>Repository Secret <code>TF_API_TOKEN</code>:</strong> Required for GitHub to communicate with Terraform Cloud.</li>
+  <li><strong>Trigger:</strong> A GitHub Actions OIDC role (<code>GitHubActionRole</code>) allows the runner to verify AWS resources without long-lived keys.</li>
+</ul>
 
 <h2 id="usage">Usage & Testing</h2>
 <p>
   To generate labels for an image, follow these steps:
 </p>
 <ol>
+  <li>
+      <strong>Run the scripts to sync configuration locally:</strong><br>
+      <pre>bash ./scripts/sync-config.sh</pre>
+  </li>
   <li>
     Upload an image (e.g., <code>cats.jpg</code>) to the S3 bucket created by Terraform.<br>
     <pre>aws s3 cp &lt;your-image-file-name&gt; s3://&lt;your-s3-bucket-name&gt;</pre>
@@ -269,7 +280,7 @@ This project uses a fully automated GitOps pipeline to ensure code quality and d
   </li>
   <li>
     <strong>View Logs:</strong> The logs will appear instantly in your VS Code terminal.<br>
-    <img src="" alt="" />
+    <img src="assets/vscode-terminal-logs.png" alt="vscode-terminal-logs" />
   </li>
   <li>
     <strong>View Results:</strong> A browser window pops up after the analysis is finished.<br>
@@ -318,7 +329,8 @@ This project uses a fully automated GitOps pipeline to ensure code quality and d
         <tr>
             <td><strong>Security Risks of Long-Lived Keys</strong></td>
             <td>
-                Relying on static IAM Access Keys in local code poses a leak risk. Solution: Migrated secrets to AWS SSM Parameter Store as SecureString and implemented a sync-config.sh script to fetch them securely into a git-ignored config.json.
+                Migrated secrets to AWS SSM Parameter Store as SecureString and implemented a <code>sync-config.sh</code> script to fetch them securely into a git-ignored <code>config.json</code>.<br>
+                <img src="assets/secret-manager.png" alt="secret-manager" />
             </td>
         </tr>
         <tr>
@@ -377,7 +389,7 @@ This project uses a fully automated GitOps pipeline to ensure code quality and d
     See her youtube channel here: <a href="https://www.youtube.com/@TechwithLucy" target="_blank">Tech With Lucy</a>
   </li>
   <li>
-    Watch her video here: <a href="https://www.youtube.com/watch?v=0hJxcBdRlYw" target="_blank">5 Intermediate AWS Cloud Projects To Get You Hired (2025)</a>
+    Watch her video here: <a href="https://www.youtube.com/watch?v=hiE0El3zs1Y" target="_blank">5 Beginner AWS Cloud Projects To Get You Hired (2025)</a>
   </li>
 </ul>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
