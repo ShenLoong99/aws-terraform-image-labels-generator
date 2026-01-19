@@ -24,12 +24,19 @@ resource "aws_iam_user" "project_user" {
 
 # Attach the Policies to the GROUP (instead of the user)
 resource "aws_iam_group_policy_attachment" "group_attach" {
-  for_each = toset([
-    aws_iam_policy.rekognition_s3_policy.arn,
-    aws_iam_policy.rekognition_policy.arn
-  ])
+  for_each = {
+    s3_policy          = aws_iam_policy.rekognition_s3_policy.arn
+    rekognition_policy = aws_iam_policy.rekognition_policy.arn
+  }
+
   group      = aws_iam_group.developer_group.name
   policy_arn = each.value
+}
+
+# IAM Role Policy Attachments
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 # S3 policy for Rekognition access

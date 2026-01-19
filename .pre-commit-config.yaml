@@ -14,3 +14,17 @@ repos:
       - id: terraform_tflint   # Catches AWS provider-specific errors
         args:
           - "--args=--config=.tflint.hcl"
+      - id: terraform_docs      # Automates Technical Reference updates
+        args:
+          - --args=--prefix=README.template.md
+
+  - repo: local
+    hooks:
+      - id: checkov
+        name: Checkov
+        description: Runs checkov on Terraform files.
+        entry: python -m checkov.main # Set for my path
+        language: system
+        pass_filenames: false
+        always_run: true
+        args: ["--directory", "."]

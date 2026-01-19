@@ -1,11 +1,21 @@
 <a id="readme-top"></a>
 
+<div align="center">
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![Unlicense License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
+
+<h1>📷 AWS Image Labels Generator</h1>
+<img src="assets/cover-image.jpg" alt="cover-image">
+
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+
 <br>
 
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)<br>
@@ -13,19 +23,15 @@
 [![Production Deployment][cd-shield]][cd-url]
 [![Update Documentation][docs-shield]][docs-url]
 
-<div>
-  <p>
-    <strong>Notice:</strong> This project has been migrated from a monolithic collection at <a href="https://github.com/ShenLoong99/my-terraform-aws-projects-2025">my-terraform-aws-projects-2025</a> to this dedicated repository for better project isolation and CI/CD management.<br>
-    To review the full development lifecycle, including initial architectural decisions and incremental code changes, please refer to the original commit history in the source repository.
-  </p>
+<br>
 
-  <h1>📷 AWS Image Labels Generator</h1>
-    <img src="assets/cats-ui-output.png" alt="cats-ui-output" width="800">
-    <p>
-        The <strong>AWS Image Labels Generator</strong> is a cloud-native automated solution designed to detect and catalog objects, scenes, and concepts within images. By leveraging advanced machine learning, this project allows users to upload images to a secure cloud storage environment and receive detailed metadata labels with high confidence scores.
-        <br />
-      <a href="#about-the-project"><strong>Explore the docs »</strong></a>
-    </p>
+![Last Commit](https://img.shields.io/github/last-commit/{{GITHUB_USER}}/{{REPO_NAME}}?style=for-the-badge)
+![Repo Size](https://img.shields.io/github/repo-size/{{GITHUB_USER}}/{{REPO_NAME}}?style=for-the-badge)
+![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge&logo=pre-commit&logoColor=white)
+[![Checkov Security](https://img.shields.io/badge/Checkov-Secured-brightgreen?style=for-the-badge&logo=checkov&logoColor=white)](https://github.com/{{GITHUB_USER}}/{{REPO_NAME}}/actions/workflows/ci.yml)
+
+<a href="#about-the-project"><strong>Explore the docs »</strong></a>
+
 </div>
 
 <details>
@@ -37,17 +43,25 @@
     <li><a href="#architecture">Architecture</a></li>
     <li><a href="#file-structure">File Structure</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#gitops">GitOps & CI/CD Workflow</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#challenges-faced">Challenges</a></li>
     <li><a href="#cost-optimization">Cost Optimization</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
 </details>
 
 <h2 id="about-the-project">About The Project</h2>
 <p>
+  The <strong>AWS Image Labels Generator</strong> is a cloud-native automated solution designed to detect and catalog objects, scenes, and concepts within images. By leveraging advanced machine learning, this project allows users to upload images to a secure cloud storage environment and receive detailed metadata labels with high confidence scores.
+</p>
+<p>
     This project was built to demonstrate a modern <strong>GitOps workflow</strong> and <strong>Infrastructure as Code (IaC)</strong> principles using Terraform Cloud. It provides a bridge between raw image data and actionable insights, suitable for applications ranging from automated media tagging to brand coverage analysis.
+</p>
+<p>
+  <strong>Notice:</strong> This project has been migrated from a monolithic collection at <a href="https://github.com/ShenLoong99/my-terraform-aws-projects-2025">my-terraform-aws-projects-2025</a> to this dedicated repository for better project isolation and CI/CD management. To review the full development lifecycle, including initial architectural decisions and incremental code changes, please refer to the original commit history in the source repository.
 </p>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
@@ -60,7 +74,6 @@
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="45" height="45" style="margin: 10px;"/>
 </p>
 <ul>
-  <li><strong>Terraform:</strong> Used for Infrastructure as Code to provision and manage AWS resources.</li>
   <li><strong>Terraform Cloud:</strong> Manages the VCS-driven workflow and state for the infrastructure.</li>
   <li><strong>AWS S3:</strong> Provides highly durable and scalable object storage for the source images.</li>
   <li><strong>Amazon Rekognition:</strong> A deep-learning-based service that performs the heavy lifting of image analysis and label detection.</li>
@@ -83,32 +96,58 @@
 
 <h2 id="architecture">Architecture</h2>
 <p align="center">
-  <img src="assets/AWS-Image-Labels-Generator.jpg" alt="Architecture Diagram" width="800">
+  <img src="assets/AWS-Image-Labels-Generator.jpg" alt="Architecture Diagram">
 </p>
 <p>
   The system follows a serverless-inspired architecture to ensure scalability and cost-efficiency:
 </p>
 <ol>
-  <li><strong>Storage & Trigger:</strong> An image is uploaded to the S3 Bucket. This action automatically triggers an S3 Event Notification.</li>
-  <li><strong>Compute: AWS Lambda</strong> receives the event, extracts the image metadata, and sends it to Amazon Rekognition.</li>
-  <li><strong>Analysis:</strong> Rekognition performs label detection and returns the results to the Lambda function.</li>
-  <li><strong>Logging:</strong> Results and confidence scores are streamed to Amazon CloudWatch Logs for real-time monitoring.</li>
+  <li><strong>Infrastructure:</strong> Terraform provisions S3, Lambda, and <strong>SSM Parameter Store.</strong></li>
+  <li><strong>Configuration Sync:</strong> Local CLI runs <code>sync-config.sh</code> to pull secure keys from SSM into a local <code>config.json</code>.</li>
+  <li><strong>Local Analysis:</strong> User runs <code>detect_labels.py</code>. It reads <code>config.json</code>, fetches the image from S3, and calls Rekognition.</li>
+  <li><strong>Health Monitoring:</strong> CloudWatch tracks Lambda execution and S3 metrics to ensure the system is healthy.</li>
 </ol>
+
+### Technical Reference
+This section is automatically updated with the latest infrastructure details.
+<details>
+<summary><b>Detailed Infrastructure Specifications</b></summary>
+
+</details>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="file-structure">File Structure</h2>
-<pre>.
+<pre>aws-terraform-image-labels-generator
+├── .github/workflows/          # GitHub Actions CI/CD workflows
+│   ├── ci.yml                  # CI: Lints, formats, and validates Terraform code
+│   ├── update-readme.yml       # Auto-updates README with terraform-docs
+│   └── cd.yml                  # Production deployment & verification
 ├── assets/                     # Architecture diagrams and UI screenshots
-├── lambda/                     # Backend Serverless Logic
-│   ├── detect_labels.py        # Python script for Rekognition & CloudWatch logging
-│   └── function.zip            # Optimized deployment package (<1KB)
-├── main.tf                     # Core IaC: Provisions S3, Lambda, and Rekognition IAM
-├── output.tf                   # Defines S3 bucket names and IAM role ARNs for CLI use
-├── terraform.tf                # Terraform Cloud backend & workspace configuration
-├── variable.tf                 # Input variables for AWS Region and resource tagging
-├── .gitignore                  # Prevents tracking of .terraform and local state backups
+├── lambda/                     # Backend Logic
+│   └── detect_labels.py        # Python script (Runs locally and in AWS)
+│   └── function.zip            # Optimized deployment package, less than 1KB
+├── scripts/                    # Automation Tooling
+│   ├── setup.sh                # Initial local environment setup
+│   ├── sync-config.sh          # Fetches SecureStrings from SSM to config.json
+│   ├── verify-role.sh          # Post-deployment lambda role check
+│   └── verify-lambda.sh        # Post-deployment lambda function name check
+├── .checkov.yml                # List of rules to skip in Checkov analysis
 ├── .terraform.lock.hcl         # Ensures consistent provider versions across environments
-└── README.md                   # Project documentation and setup guide
+├── .gitignore                  # Prevents config.json & .tfstate from being pushed
+├── .pre-commit-config.yml      # Runs a series of checks (hooks) locally before every git commit
+├── .tflint.hcl                 # Configuration for TFLint
+├── config.json                 # Dynamic configuration of bucket names and IAM keys fetched from AWS SSM by sync-config.sh script
+├── iam.tf                      # IAM Users, Groups, and Permissions
+├── lambda.tf                   # Lambda function and ZIP configuration
+├── main.tf                     # S3 cloudwatch error metric
+├── outputs.tf                  # Exported ARNs and Names for GitOps
+├── providers.tf                # AWS & Archive provider configurations
+├── variables.tf                # Input variables for AWS Region and resource tagging
+├── ssm.tf                      # SSM Parameter Store secure key management
+├── storage.tf                  # S3 bucket configuration
+├── variables.tf                # Project-wide input variables
+├── README.template.md          # Manual documentation source
+└── README.md                   # Auto-generated final documentation
 </pre>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
@@ -121,17 +160,9 @@
     <li><strong>Set your AWS Region:</strong> Set to whatever <code>aws_region</code> you want in <code>variables.tf</code>.</li>
 </ul>
 
-<h3>Terraform State Management</h3>
-<p>Select one:</p>
+<h3>Terraform Cloud State Management</h3>
 <ol>
-   <li>Terraform Cloud</li>
-   <li>Terraform Local CLI</li>
-</ol>
-
-<h4>Terraform Cloud Configuration</h4>
-<p>If you choose Terraform Cloud, please follow the steps below:</p>
-<ol>
-   <li>Create a new <strong>Workspace</strong> in Terraform Cloud.</li>
+   <li>Create a new <strong>Workspace</strong>, VCS workflow in Terraform Cloud.</li>
    <li>In the Variables tab, add the following <strong>Terraform Variables:</strong>
    </li>
    <li>
@@ -141,46 +172,85 @@
       <li><code>AWS_SECRET_ACCESS_KEY</code></li>
    </ul>
    </li>
-</ol>
-
-<h4>Terraform Local CLI Configuration</h4>
-<p>If you choose Terraform Local CLI, please follow the steps below:</p>
-<ol>
-   <li>
-      Comment the <code>backend</code> block in <code>terraform.tf</code>:
-      <pre># backend "remote" {
-#   hostname     = "app.terraform.io"
-#   organization = "my-terraform-aws-projects-2025"
-#   workspaces {
-#     name = "AWS-Image-Labels-Generator"
-#   }
-# }</pre>
+    <li>
+      Run the command ni Terraform CLI:
+      <pre>terraform login</pre>
+    </li>
+    <li>Create a token and follow the steps in browser to complete the Terraform Cloud Connection.</li>
+    <li>
+      Add the <code>backend</code> block in <code>terraform</code> code block</code>:
+    <pre>backend "remote" {
+  hostname     = "app.terraform.io"
+  organization = &lt;your-organization-name&gt;
+  workspaces {
+    name = &lt;your-workspace-name&gt;
+  }
+}</pre>
    </li>
-   <li>
-    Add the following <strong>Environment Variables</strong> (AWS Credentials):
-    <pre>git bash command:
-export AWS_ACCESS_KEY_ID=&lt;your-aws-access-key-id&gt;
-export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
+    <li>
+      Run the command in Terraform CLI to migrate the state into Terraform Cloud:
+      <pre>terraform init -migrate-state</pre>
+    </li>
 </ol>
 
 <h3>Installation & Deployment</h3>
 <ol>
     <li>
-        <strong>Clone the Repository</strong>
+        <strong>Clone the Repository:</strong>
+        <pre>git clone https://github.com/{{GITHUB_USER}}/{{REPO_NAME}}.git</pre>
     </li>
     <li>
-        <strong>Provision Infrastructure:</strong>
-        <ul>
-          <li>
-            <strong>Terraform Cloud</strong> → <strong>Initialize & Apply:</strong> Push your code to GitHub. Terraform Cloud will automatically detect the change, run a <code>plan</code>, and wait for your approval.
-          </li>
-          <li>
-            <strong>Terraform CLI</strong> → <strong>Initialize & Apply:</strong> Run <code>terraform init</code> → <code>terraform plan</code> → <code>terraform apply</code>, and wait for your approval.
-          </li>
-        </ul>
+        <strong>Provision Infrastructure:</strong><br>
+        <strong>Terraform Cloud</strong> → <strong>Initialize & Apply:</strong> Push your code to GitHub. Terraform Cloud will automatically detect the change, run a <code>plan</code>, and wait for your approval.
     </li>
-
+    <li>
+        <strong>Observe workflow:</strong><br>
+        <strong>GitHub (GitOps)</strong> → <strong>Github actions:</strong> Observe the process/workflow of CI/CD in the actions tab in GitHub.
+    </li>
+    <li>
+        <strong>Run the scripts to sync configuration locally:</strong><br>
+        <pre>bash ./scripts/sync-config.sh</pre>
+    </li>
 </ol>
+<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
+
+<h2 id="gitops">GitOps & CI/CD Workflow</h2>
+
+This project uses a fully automated GitOps pipeline to ensure code quality and deployment reliability. The **Pre-commit** framework implements a "Shift-Left" strategy, ensuring that code is formatted, documented, and secure before it ever leaves your machine.
+
+### Workflow Files
+
+#### 1. Pre-commit
+* **Tool:** Executes `terraform fmt`, `terraform validate` and `TFLint` to ensure the code is clean.
+* **Trigger:** Runs on every **git commit**.
+* **Outcome:** If any check fails, the commit is blocked. You fix the error, re-add the file, and commit again.
+
+#### 2. Continuous Integration (PR)
+* **Tool:** Executes `terraform fmt -check`, `terraform validate` and `Checkov` to ensure the code is clean.
+* **Trigger:** Runs on every **Pull Request**.
+* **Outcome:** This acts as the "Gatekeeper" before code is merged to `main`
+
+#### 3. Continuous Delivery (Deployment)
+* **Tool:** Terraform Cloud + GitHub Actions OIDC
+* **Trigger:** Merges to the `main` branch.
+* **Outcome:** The pipeline verifies the infrastructure state and runs a post-deployment health check (`verify-lambda.sh`) to confirm the Rekognition service is responding.
+
+#### 4. update-readme.yml (Documentation-as-Code):
+* **Tool:** `terraform-docs/gh-actions`
+* **Trigger:** Any change to `.tf` files or `README.template.md`.
+* **Outcome:** Technical tables for **Inputs**, **Outputs**, and **Resources** are automatically injected between specific markers in the README, preventing documentation drift.
+
+### Prerequisites for GitOps
+* **Secret: `TF_API_TOKEN`**: Required for GitHub to communicate with Terraform Cloud.
+* **IAM Role**: A GitHub Actions OIDC role (`GitHubActionRole`) allows the runner to verify AWS resources without long-lived keys.
+
+### Benefits
+* **Zero Drift**: Your documentation always matches your code because it is updated at the moment of the commit.
+* **Cleaner Pull Requests**: Reviewers don't waste time pointing out formatting errors or simple syntax mistakes.
+* **Security by Default**: You cannot accidentally commit a public S3 bucket because Checkov will block the commit locally.
+* **Consistency**: The `README` always reflects the exact state of the infrastructure.
+* **Security**: No AWS keys are stored in GitHub; we use temporary OIDC tokens and SSM Parameter Store for local development.
+* **Reliability**: `post-deploy` checks ensure the Lambda is actually functional before marking a release as "Success".
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="usage">Usage & Testing</h2>
@@ -189,183 +259,21 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
 </p>
 <ol>
   <li>
-    Upload an image (e.g., <code>busy-traffic-road.jpg</code>) to the S3 bucket created by Terraform.<br>
+    Upload an image (e.g., <code>cats.jpg</code>) to the S3 bucket created by Terraform.<br>
     <pre>aws s3 cp &lt;your-image-file-name&gt; s3://&lt;your-s3-bucket-name&gt;</pre>
-    <img src="assets/busy-traffic-road.jpg" alt="busy-traffic-road" width="400">
+    <img src="assets/cats.jpg" alt="cats" />
   </li>
   <li>
-    <strong>Start the Log Stream:</strong> Open your VS Code terminal and run the following command to see results as they happen.<br>
-    <pre>aws logs tail /aws/lambda/&lt;your-lambda-function-name&gt; --follow</pre>
-    Use the command below if on Git Bash Terminal: <br>
-    <pre>MSYS_NO_PATHCONV=1 aws logs tail /aws/lambda/&lt;your-lambda-function-name&gt; --follow</pre>
+    <strong>Run the analysis:</strong><br>
+    <pre>python lambda/detect_labels.py &lt;s3-bucket-name&gt; &lt;your-image-file-name&gt;</pre>
   </li>
   <li>
-    <strong>View Results:</strong> The detection results will appear instantly in your VS Code terminal.<br>
-    AWS Console CloudWatch Log Output: <br>
-    <img src="assets/aws-cloudwatch-logs-output.png" alt="busy-traffic-road" width="800"><br>
-    Terminal Output: <br>
-    <img src="assets/cloudwatch-logs-output-cli.png" alt="busy-traffic-road" width="800"><br>
-    Sample result: <br>
-    <pre>
-      [
-        {
-          "Name": "Animal",
-          "Confidence": 99.993408203125,
-          "Instances": [],
-          "Parents": [],
-          "Aliases": [],
-          "Categories": [
-            {
-              "Name": "Animals and Pets"
-            }
-          ]
-        },
-        {
-          "Name": "Cat",
-          "Confidence": 99.993408203125,
-          "Instances": [
-            {
-              "BoundingBox": {
-                "Width": 0.3602134585380554,
-                "Height": 0.670926570892334,
-                "Left": 0.5902238488197327,
-                "Top": 0.13030071556568146
-              },
-              "Confidence": 89.81806945800781
-            },
-            {
-              "BoundingBox": {
-                "Width": 0.24711352586746216,
-                "Height": 0.6337666511535645,
-                "Left": 0.39016199111938477,
-                "Top": 0.16519160568714142
-              },
-              "Confidence": 82.076171875
-            },
-            {
-              "BoundingBox": {
-                "Width": 0.4233805239200592,
-                "Height": 0.7645028829574585,
-                "Left": 0.024279789999127388,
-                "Top": 0.012194041162729263
-              },
-              "Confidence": 80.09024047851562
-            },
-            {
-              "BoundingBox": {
-                "Width": 0.23163087666034698,
-                "Height": 0.7965526580810547,
-                "Left": 0.24353167414665222,
-                "Top": 0.009294004179537296
-              },
-              "Confidence": 73.9099349975586
-            }
-          ],
-          "Parents": [
-            {
-              "Name": "Animal"
-            },
-            {
-              "Name": "Mammal"
-            },
-            {
-              "Name": "Pet"
-            }
-          ],
-          "Aliases": [],
-          "Categories": [
-            {
-              "Name": "Animals and Pets"
-            }
-          ]
-        },
-        {
-          "Name": "Kitten",
-          "Confidence": 99.993408203125,
-          "Instances": [],
-          "Parents": [
-            {
-              "Name": "Animal"
-            },
-            {
-              "Name": "Cat"
-            },
-            {
-              "Name": "Mammal"
-            },
-            {
-              "Name": "Pet"
-            }
-          ],
-          "Aliases": [],
-          "Categories": [
-            {
-              "Name": "Animals and Pets"
-            }
-          ]
-        },
-        {
-          "Name": "Mammal",
-          "Confidence": 99.993408203125,
-          "Instances": [],
-          "Parents": [
-            {
-              "Name": "Animal"
-            }
-          ],
-          "Aliases": [],
-          "Categories": [
-            {
-              "Name": "Animals and Pets"
-            }
-          ]
-        },
-        {
-          "Name": "Pet",
-          "Confidence": 99.993408203125,
-          "Instances": [],
-          "Parents": [
-            {
-              "Name": "Animal"
-            }
-          ],
-          "Aliases": [],
-          "Categories": [
-            {
-              "Name": "Animals and Pets"
-            }
-          ]
-        },
-        {
-          "Name": "Grass",
-          "Confidence": 99.5927734375,
-          "Instances": [],
-          "Parents": [
-            {
-              "Name": "Plant"
-            }
-          ],
-          "Aliases": [],
-          "Categories": [
-            {
-              "Name": "Plants and Flowers"
-            }
-          ]
-        },
-        {
-          "Name": "Plant",
-          "Confidence": 99.5927734375,
-          "Instances": [],
-          "Parents": [],
-          "Aliases": [],
-          "Categories": [
-            {
-              "Name": "Plants and Flowers"
-            }
-          ]
-        }
-      ]
-    </pre>
+    <strong>View Logs:</strong> The logs will appear instantly in your VS Code terminal.<br>
+    <img src="" alt="" />
+  </li>
+  <li>
+    <strong>View Results:</strong> A browser window pops up after the analysis is finished.<br>
+    <img src="assets/cats-ui-output.png" alt="cats-ui-output" />
   </li>
 </ol>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
@@ -376,6 +284,7 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
   <li>[x] <strong>Environment Config:</strong> Install and configure the AWS CLI and Python environment (boto3, Pillow) to communicate with cloud services.</li>
   <li>[x] <strong>Logic Development:</strong> Develop the Python script using the detect_labels function to send images to Amazon Rekognition.</li>
   <li>[x] <strong>Execution & Verification:</strong> Run the script to generate metadata tags and verify object detection results with bounding boxes.</li>
+  <li>[x] <strong>GitOps Automation:</strong> Implement pre-commit hooks and GitHub Actions to automate code quality, security scanning, and documentation.</li>
 </ul>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
@@ -395,15 +304,9 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
             </td>
         </tr>
         <tr>
-            <td><strong>Manual Workflow</strong></td>
+            <td><strong>Dynamic <code>for_each</code> Errors</strong></td>
             <td>
-                Replaced manual script execution with S3 Event Notifications to trigger Lambda automatically on every upload.
-            </td>
-        </tr>
-        <tr>
-            <td><strong>CLI Path Errors</strong></td>
-            <td>
-                Resolved Git Bash path mangling on Windows by using MSYS_NO_PATHCONV=1 for real-time log streaming.
+                Using dynamic resource ARNs (known only after apply) as for_each keys caused plan failures. Solution: Refactored IAM policy attachments to use a Map with Static Keys, ensuring resource addresses are predictable during the plan phase.
             </td>
         </tr>
         <tr>
@@ -413,10 +316,40 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
             </td>
         </tr>
         <tr>
-            <td><strong>Security Risks</strong></td>
+            <td><strong>Security Risks of Long-Lived Keys</strong></td>
             <td>
-                Eliminated long-lived IAM Access Keys; implemented IAM Execution Roles for secure, temporary credentialing.
+                Relying on static IAM Access Keys in local code poses a leak risk. Solution: Migrated secrets to AWS SSM Parameter Store as SecureString and implemented a sync-config.sh script to fetch them securely into a git-ignored config.json.
             </td>
+        </tr>
+        <tr>
+          <td><strong>GitOps: Documentation Drift</strong></td>
+          <td>
+            Integrated <code>terraform-docs</code> into a <strong>GitHub Action</strong> and <strong>Pre-commit hook</strong> to automatically inject technical specs into the README on every commit.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>GitOps: Configuration Drift</strong></td>
+          <td>
+            Enforced a <strong>Push-based GitOps flow</strong> using Terraform Cloud; any manual changes are automatically overwritten or flagged during the next automated <code>terraform plan</code>.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Commit Interruption (Broken Hooks)</strong></td>
+          <td>
+            Standardized hook naming and versions in <code>.pre-commit-config.yml</code> to ensure consistent local environments.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Security Misconfigurations</strong></td>
+          <td>
+            Implemented <strong>Checkov</strong> scanning in both local pre-commit hooks and the GitHub CI pipeline to act as a security gate.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Local Environment Parity</strong></td>
+          <td>
+            Pre-commit hooks failed locally due to missing system binaries (Checkov/Terraform-docs).
+          </td>
         </tr>
     </tbody>
 </table>
@@ -430,9 +363,8 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
   <li><strong>S3 Lifecycle Policies:</strong> Automatically transition images to <em>S3 Standard-IA</em> or <em>Glacier</em> after 30 days of inactivity to reduce storage costs.</li>
   <li><strong>Confidence Thresholds:</strong> By setting a <code>MIN_CONFIDENCE</code> level (e.g., 70%), we filter out low-certainty results, reducing unnecessary data processing.</li>
   <li><strong>Free Tier Utilization:</strong> Amazon Rekognition and S3 both offer free tier limits for the first 12 months, which this project stays within for light usage.</li>
-  <li><strong>Manual Apply in TFC:</strong> Set Terraform Cloud to "Manual Apply" to prevent accidental resource creation and associated costs.</li>
+  <li><strong>Manual Apply in TFC:</strong> Utilize Terraform Cloud Version Control Workflow to prevent accidental resource creation and associated costs.</li>
   <li><strong>Serverless Execution:</strong> By using Lambda instead of a local environment, you only pay for the milliseconds the code is actually running (1M free requests/month).</li>
-  <li><strong>Log Retention:</strong> Added a CloudWatch Log Group with a 7-day retention policy to avoid long-term storage costs for test logs.</li>
 </ul>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
@@ -449,9 +381,6 @@ export AWS_SECRET_ACCESS_KEY=&lt;your-aws-secret-access-key&gt;
   </li>
 </ul>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
-
-## Technical Reference
-This section is automatically updated with the latest infrastructure details.
 
 [contributors-shield]: https://img.shields.io/github/contributors/{{GITHUB_USER}}/{{REPO_NAME}}.svg?style=for-the-badge
 [contributors-url]: {{REPO_URL}}/graphs/contributors

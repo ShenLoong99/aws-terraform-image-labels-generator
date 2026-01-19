@@ -25,3 +25,6 @@ skip-check:
 
   # SSM specific skips
   - CKV_AWS_337 # Ensure SSM Parameters are encrypted using KMS CMK (Avoids $1/mo KMS fee)
+
+  # GitHub Action skips
+  - CKV2_GHA_1 # Ensure top-level permissions are not set to write-all (Intentional skip as the workflows requires the permission)

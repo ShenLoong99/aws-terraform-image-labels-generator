@@ -1,9 +1,3 @@
-# IAM Role Policy Attachments
-resource "aws_iam_role_policy_attachment" "lambda_logs" {
-  role       = aws_iam_role.lambda_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-}
-
 # Execute setup script after S3 bucket creation
 resource "terraform_data" "setup_script" {
   # This ensures the script runs AFTER the bucket is created
