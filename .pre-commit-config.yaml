@@ -14,3 +14,9 @@ repos:
       - id: terraform_tflint   # Catches AWS provider-specific errors
         args:
           - "--args=--config=.tflint.hcl"
+      - id: terraform_docs      # Automates Technical Reference updates
+        args:
+          - --args=--prefix=README.template.md
+      - id: terraform_checkov   # Enforces the security policies in .checkov.yml
+        args:
+          - "--args=--config-file .checkov.yml"
