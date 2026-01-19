@@ -153,19 +153,20 @@ This section is automatically updated with the latest infrastructure details.
 {{ .Content }}
 <!-- END_TF_DOCS -->
 </details>
+<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="getting-started">Getting Started</h2>
 <h3>Prerequisites</h3>
 <ul>
     <li>An active <strong>AWS Account</strong>.</li>
-    <li><strong>Terraform CLI / Terraform Cloud(optional)</strong> for IaC deployment.</li>
+    <li><strong>Terraform Cloud</strong> for IaC deployment.</li>
     <li><strong>Python 3.x</strong> installed locally for running the detection script.</li>
     <li><strong>Set your AWS Region:</strong> Set to whatever <code>aws_region</code> you want in <code>variables.tf</code>.</li>
 </ul>
 
 <h3>Terraform Cloud State Management</h3>
 <ol>
-   <li>Create a new <strong>Workspace</strong>, VCS workflow in Terraform Cloud.</li>
+   <li>Create a new <strong>Workspace</strong> with github version control workflow in Terraform Cloud.</li>
    <li>In the Variables tab, add the following <strong>Terraform Variables:</strong>
    </li>
    <li>
