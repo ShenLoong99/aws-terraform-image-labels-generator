@@ -214,7 +214,7 @@ This section is automatically updated with the latest infrastructure details.
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="gitops">GitOps & CI/CD Workflow</h2>
-<p>This project uses a fully automated GitOps pipeline to ensure code quality and deployment reliability. The **Pre-commit** framework implements a "Shift-Left" strategy, ensuring that code is formatted, documented, and secure before it ever leaves your machine.</p>
+<p>This project uses a fully automated GitOps pipeline to ensure code quality and deployment reliability. The <strong>Pre-commit</strong> framework implements a "Shift-Left" strategy, ensuring that code is formatted, documented, and secure before it ever leaves your machine.</p>
 
 <h3>Workflow Files</h3>
 <ol>
@@ -361,7 +361,7 @@ This section is automatically updated with the latest infrastructure details.
         <tr>
           <td><strong>Local Environment Parity</strong></td>
           <td>
-            Pre-commit hooks failed locally due to missing system binaries (Checkov/Terraform-docs).
+            Pre-commit hooks failed locally due to missing system binaries (<code>Checkov</code>/<code>terraform-docs</code>).
           </td>
         </tr>
     </tbody>
