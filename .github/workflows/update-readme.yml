@@ -38,6 +38,10 @@ jobs:
           output-file: README.md
           output-method: inject
 
+      # Format README using Prettier
+      - name: Format README
+        run: npx prettier --write README.md
+
       # Commit and Push with improved error handling
       - name: Commit and Push Changes
         run: |
