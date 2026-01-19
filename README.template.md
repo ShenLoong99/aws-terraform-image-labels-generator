@@ -112,6 +112,7 @@
 This section is automatically updated with the latest infrastructure details.
 <details>
 <summary><b>Detailed Infrastructure Specifications</b></summary>
+
 <!-- BEGIN_TF_DOCS -->
 {{ .Content }}
 <!-- END_TF_DOCS -->
