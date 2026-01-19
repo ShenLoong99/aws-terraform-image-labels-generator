@@ -114,7 +114,9 @@ This section is automatically updated with the latest infrastructure details.
 
 <details>
 <summary><b>Detailed Infrastructure Specifications</b></summary>
+
 <!-- BEGIN_TF_DOCS -->
+
 ## Requirements
 
 | Name                                                                     | Version  |
@@ -176,13 +178,13 @@ No modules.
 
 | Name                                                                                                           | Description                                                |
 | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| <a name="output_access_key_path"></a> [access_key_path](#output_access_key_path)                               | n/a                                                        |
+| <a name="output_access_key_path"></a> [access_key_path](#output_access_key_path)                               | SSM access key for local config.json                       |
 | <a name="output_aws_region"></a> [aws_region](#output_aws_region)                                              | The AWS region where resources are deployed                |
 | <a name="output_lambda_execution_role_arn"></a> [lambda_execution_role_arn](#output_lambda_execution_role_arn) | IAM role ARN assumed by Lambda for S3 + Rekognition access |
 | <a name="output_lambda_function_name"></a> [lambda_function_name](#output_lambda_function_name)                | Rekognition Lambda function name                           |
 | <a name="output_lambda_role_name"></a> [lambda_role_name](#output_lambda_role_name)                            | IAM role name for Lambda                                   |
 | <a name="output_s3_bucket_name"></a> [s3_bucket_name](#output_s3_bucket_name)                                  | S3 bucket name for image uploads                           |
-| <a name="output_secret_key_path"></a> [secret_key_path](#output_secret_key_path)                               | n/a                                                        |
+| <a name="output_secret_key_path"></a> [secret_key_path](#output_secret_key_path)                               | SSM secret key for local config.json                       |
 
 <!-- END_TF_DOCS -->
 </details>
