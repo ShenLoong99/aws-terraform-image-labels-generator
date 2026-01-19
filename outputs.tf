@@ -24,9 +24,11 @@ output "aws_region" {
 }
 
 output "access_key_path" {
-  value = aws_ssm_parameter.access_key.name
+  description = "SSM access key for local config.json"
+  value       = aws_ssm_parameter.access_key.name
 }
 
 output "secret_key_path" {
-  value = aws_ssm_parameter.secret_key.name
+  description = "SSM secret key for local config.json"
+  value       = aws_ssm_parameter.secret_key.name
 }
