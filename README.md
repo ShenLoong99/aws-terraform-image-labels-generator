@@ -323,6 +323,16 @@ No modules.
       </li>
     </ul>
   </li>
+  <li>
+    <strong>Dynamically update readme documentation</strong>
+    <ul>
+      <li><strong>Tool:</strong> Terraform Cloud + GitHub Actions.</li>
+      <li><strong>Trigger:</strong> Merges to the <code>main</code> branch.</li>
+      <li>
+        <strong>Outcome:</strong> The pipeline verifies the infrastructure state from Terraform Cloud, retrieve outputs from Terraform Cloud and update the readme documentation file dynamically.
+      </li>
+    </ul>
+  </li>
 </ol>
 
 <h3>Prerequisites for GitOps</h3>
