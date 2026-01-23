@@ -1,13 +1,13 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
 
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.86.0
+    rev: v1.105.0
     hooks:
       - id: terraform_fmt      # Ensures consistent spacing/indentation
       - id: terraform_validate  # Basic syntax & schema validation
@@ -18,13 +18,13 @@ repos:
         args:
           - --args=--prefix=README.template.md
 
-  - repo: local
+  - repo: https://github.com/bridgecrewio/checkov
+    rev: 3.2.497 # It is best practice to use a specific stable version
     hooks:
       - id: checkov
-        name: Checkov
-        description: Runs checkov on Terraform files.
-        entry: python -m checkov.main # Set for my path
-        language: system
-        pass_filenames: false
-        always_run: true
-        args: ["--directory", "."]
+        # Optional: You can still pass your custom arguments here
+        args: [
+          "--directory", ".",
+          "--soft-fail", # Highly recommended for initial setup
+          "--quiet"      # Only show errors to keep your terminal clean
+        ]
