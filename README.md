@@ -113,12 +113,21 @@
 <pre>aws-terraform-image-labels-generator
 ├── .github/workflows/          # GitHub Actions CI/CD workflows
 │   ├── ci.yml                  # CI: Lints, formats, and validates Terraform code
-│   ├── update-readme.yml       # Auto-updates README with terraform-docs
+│   ├── documentation.yml       # Auto-updates README with terraform-docs
 │   └── cd.yml                  # Production deployment & verification
 ├── assets/                     # Architecture diagrams and UI screenshots
-├── lambda/                     # Backend Logic
-│   └── detect_labels.py        # Python script (Runs locally and in AWS)
-│   └── function.zip            # Optimized deployment package, less than 1KB
+├── modules/                  # Child Modules (Stateless Logic)
+│   ├── ssm/                  # Systems Manager definitions
+│   ├── iam/                  # Least-privilege Roles & Policies
+│   ├── storage/              # S3 Buckets for static hosting
+│   └── lambda/               # Lambda Compute & Trigger setup
+│       └── lambda/           # Serverless backend logic
+│           ├── func.py       # Lambda Python source code
+│           └── func.zip      # Compiled deployment artifact
+│       ├── main.tf           # Module-specific resources
+│       ├── outputs.tf        # Values exported to the root
+│       ├── providers.tf      # Version constraints (No cloud block!)
+│       └── variables.tf      # Module inputs
 ├── scripts/                    # Automation Tooling
 │   ├── setup.sh                # Initial local environment setup
 │   ├── sync-config.sh          # Fetches SecureStrings from SSM to config.json
@@ -128,17 +137,16 @@
 ├── .terraform.lock.hcl         # Ensures consistent provider versions across environments
 ├── .gitignore                  # Prevents config.json & .tfstate from being pushed
 ├── .pre-commit-config.yml      # Runs a series of checks (hooks) locally before every git commit
+├── .terraform-docs.yml         # Configurations for dynamic generated terraform content and file for readme
 ├── .tflint.hcl                 # Configuration for TFLint
 ├── config.json                 # Dynamic configuration of bucket names and IAM keys fetched from AWS SSM by sync-config.sh script
-├── iam.tf                      # IAM Users, Groups, and Permissions
-├── lambda.tf                   # Lambda function and ZIP configuration
-├── main.tf                     # S3 cloudwatch error metric
+├── main.tf                     # Configuration & definitions for modules
 ├── outputs.tf                  # Exported ARNs and Names for GitOps
 ├── providers.tf                # AWS & Archive provider configurations
-├── variables.tf                # Input variables for AWS Region and resource tagging
-├── ssm.tf                      # SSM Parameter Store secure key management
-├── storage.tf                  # S3 bucket configuration
 ├── variables.tf                # Project-wide input variables
+├── .terraform.lock.hcl         # Provider lock file
+├── terraform.tfstate           # Local state file (if not using cloud)
+├── terraform.tfstate.backup    # Previous state snapshot
 ├── README.template.md          # Manual documentation source
 └── README.md                   # Auto-generated final documentation
 </pre>
@@ -160,46 +168,20 @@ This section is automatically updated with the latest infrastructure details.
 | <a name="requirement_aws"></a> [aws](#requirement_aws)                   | ~> 5.0   |
 | <a name="requirement_random"></a> [random](#requirement_random)          | ~> 3.0   |
 
-## Providers
-
-| Name                                                               | Version |
-| ------------------------------------------------------------------ | ------- |
-| <a name="provider_archive"></a> [archive](#provider_archive)       | 2.7.1   |
-| <a name="provider_aws"></a> [aws](#provider_aws)                   | 5.100.0 |
-| <a name="provider_random"></a> [random](#provider_random)          | 3.7.2   |
-| <a name="provider_terraform"></a> [terraform](#provider_terraform) | n/a     |
-
 ## Modules
 
-No modules.
+| Name                                                     | Source            | Version |
+| -------------------------------------------------------- | ----------------- | ------- |
+| <a name="module_iam"></a> [iam](#module_iam)             | ./modules/iam     | n/a     |
+| <a name="module_lambda"></a> [lambda](#module_lambda)    | ./modules/lambda  | n/a     |
+| <a name="module_ssm"></a> [ssm](#module_ssm)             | ./modules/ssm     | n/a     |
+| <a name="module_storage"></a> [storage](#module_storage) | ./modules/storage | n/a     |
 
 ## Resources
 
-| Name                                                                                                                                                                                 | Type        |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| [aws_cloudwatch_metric_alarm.lambda_errors](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_metric_alarm)                                     | resource    |
-| [aws_iam_access_key.project_user_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_access_key)                                                    | resource    |
-| [aws_iam_group.developer_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group)                                                               | resource    |
-| [aws_iam_group_membership.developer_team](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_membership)                                          | resource    |
-| [aws_iam_group_policy_attachment.group_attach](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment)                              | resource    |
-| [aws_iam_policy.rekognition_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy)                                                          | resource    |
-| [aws_iam_policy.rekognition_s3_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy)                                                       | resource    |
-| [aws_iam_policy.ssm_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy)                                                                  | resource    |
-| [aws_iam_role.lambda_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role)                                                                     | resource    |
-| [aws_iam_role_policy_attachment.lambda_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment)                                 | resource    |
-| [aws_iam_user.project_user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user)                                                                    | resource    |
-| [aws_lambda_function.rekognition_lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function)                                                | resource    |
-| [aws_s3_bucket.images_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket)                                                                 | resource    |
-| [aws_s3_bucket_lifecycle_configuration.images_bucket_lifecycle](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration)       | resource    |
-| [aws_s3_bucket_metric.bucket_logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_metric)                                                  | resource    |
-| [aws_s3_bucket_public_access_block.images_bucket_access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block)                  | resource    |
-| [aws_s3_bucket_server_side_encryption_configuration.sse](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource    |
-| [aws_s3_bucket_versioning.versioning_images_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning)                                | resource    |
-| [aws_ssm_parameter.access_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter)                                                            | resource    |
-| [aws_ssm_parameter.secret_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter)                                                            | resource    |
-| [random_id.bucket_id](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id)                                                                             | resource    |
-| [terraform_data.setup_script](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data)                                                                | resource    |
-| [archive_file.lambda_zip](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file)                                                                   | data source |
+| Name                                                                                                                  | Type     |
+| --------------------------------------------------------------------------------------------------------------------- | -------- |
+| [terraform_data.setup_script](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 
 ## Inputs
 
@@ -326,7 +308,7 @@ No modules.
   <li>
     <strong>Dynamically update readme documentation</strong>
     <ul>
-      <li><strong>Tool:</strong> Terraform Cloud + GitHub Actions.</li>
+      <li><strong>Tool:</strong> <code>terraform_docs</code> + GitHub Actions.</li>
       <li><strong>Trigger:</strong> Merges to the <code>main</code> branch.</li>
       <li>
         <strong>Outcome:</strong> The pipeline verifies the infrastructure state from Terraform Cloud, retrieve outputs from Terraform Cloud and update the readme documentation file dynamically.
@@ -491,5 +473,5 @@ No modules.
 [ci-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/actions/workflows/ci.yml
 [cd-shield]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/actions/workflows/cd.yml/badge.svg
 [cd-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/actions/workflows/cd.yml
-[docs-shield]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/actions/workflows/update-readme.yml/badge.svg
-[docs-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/actions/workflows/update-readme.yml
+[docs-shield]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/actions/workflows/documentation.yml/badge.svg
+[docs-url]: https://github.com/ShenLoong99/aws-terraform-image-labels-generator/actions/workflows/documentation.yml
