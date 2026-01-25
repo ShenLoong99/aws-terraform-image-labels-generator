@@ -116,18 +116,18 @@
 │   ├── documentation.yml       # Auto-updates README with terraform-docs
 │   └── cd.yml                  # Production deployment & verification
 ├── assets/                     # Architecture diagrams and UI screenshots
-├── modules/                  # Child Modules (Stateless Logic)
-│   ├── ssm/                  # Systems Manager definitions
-│   ├── iam/                  # Least-privilege Roles & Policies
-│   ├── storage/              # S3 Buckets for static hosting
-│   └── lambda/               # Lambda Compute & Trigger setup
-│       └── lambda/           # Serverless backend logic
-│           ├── func.py       # Lambda Python source code
-│           └── func.zip      # Compiled deployment artifact
-│       ├── main.tf           # Module-specific resources
-│       ├── outputs.tf        # Values exported to the root
-│       ├── providers.tf      # Version constraints (No cloud block!)
-│       └── variables.tf      # Module inputs
+├── modules/                    # Child Modules (Stateless Logic)
+│   ├── ssm/                    # Systems Manager definitions
+│   ├── iam/                    # Least-privilege Roles & Policies
+│   ├── storage/                # S3 Buckets for static hosting
+│   └── lambda/                 # Lambda Compute & Trigger setup
+│       └── lambda/             # Serverless backend logic
+│           ├── func.py         # Lambda Python source code
+│           └── func.zip        # Compiled deployment artifact
+│       ├── main.tf             # Module-specific resources
+│       ├── outputs.tf          # Values exported to the root
+│       ├── providers.tf        # Version constraints (No cloud block!)
+│       └── variables.tf        # Module inputs
 ├── scripts/                    # Automation Tooling
 │   ├── setup.sh                # Initial local environment setup
 │   ├── sync-config.sh          # Fetches SecureStrings from SSM to config.json
@@ -296,7 +296,7 @@ This section is automatically updated with the latest infrastructure details.
   </li>
   <li>
     <strong>Run the analysis:</strong><br>
-    <pre>python modules/lambda/lambda/detect_labels.py &lt;s3-bucket-name (without s3://)&gt; &lt;your-image-file-name&gt;</pre>
+    <pre>python modules/lambda/lambda/detect_labels.py &lt;s3-bucket-name (without 's3://')&gt; &lt;your-image-file-name&gt;</pre>
   </li>
   <li>
     <strong>View Logs:</strong> The logs will appear instantly in your VS Code terminal.<br>
