@@ -140,7 +140,7 @@
 ├── .terraform-docs.yml         # Configurations for dynamic generated terraform content and file for readme
 ├── .tflint.hcl                 # Configuration for TFLint
 ├── config.json                 # Dynamic configuration of bucket names and IAM keys fetched from AWS SSM by sync-config.sh script
-├── main.tf                     # S3 cloudwatch error metric
+├── main.tf                     # Configuration & definitions for modules
 ├── outputs.tf                  # Exported ARNs and Names for GitOps
 ├── providers.tf                # AWS & Archive provider configurations
 ├── variables.tf                # Project-wide input variables
