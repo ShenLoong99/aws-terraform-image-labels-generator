@@ -1,21 +1,21 @@
 output "s3_bucket_name" {
   description = "S3 bucket name for image uploads"
-  value       = aws_s3_bucket.images_bucket.bucket
+  value       = module.storage.s3_bucket_name
 }
 
 output "lambda_execution_role_arn" {
   description = "IAM role ARN assumed by Lambda for S3 + Rekognition access"
-  value       = aws_iam_role.lambda_role.arn
+  value       = module.iam.lambda_execution_role_arn
 }
 
 output "lambda_function_name" {
   description = "Rekognition Lambda function name"
-  value       = aws_lambda_function.rekognition_lambda.function_name
+  value       = module.lambda.lambda_function_name
 }
 
 output "lambda_role_name" {
   description = "IAM role name for Lambda"
-  value       = aws_iam_role.lambda_role.name
+  value       = module.iam.lambda_role_name
 }
 
 output "aws_region" {
@@ -25,10 +25,10 @@ output "aws_region" {
 
 output "access_key_path" {
   description = "SSM access key for local config.json"
-  value       = aws_ssm_parameter.access_key.name
+  value       = module.ssm.access_key_path
 }
 
 output "secret_key_path" {
   description = "SSM secret key for local config.json"
-  value       = aws_ssm_parameter.secret_key.name
+  value       = module.ssm.secret_key_path
 }

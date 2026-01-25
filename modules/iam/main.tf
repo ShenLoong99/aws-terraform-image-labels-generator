@@ -50,12 +50,12 @@ resource "aws_iam_policy" "rekognition_s3_policy" {
       {
         Effect   = "Allow"
         Action   = ["s3:ListBucket"]
-        Resource = [aws_s3_bucket.images_bucket.arn]
+        Resource = [var.bucket_arn]
       },
       {
         Effect   = "Allow"
         Action   = ["s3:GetObject"]
-        Resource = ["${aws_s3_bucket.images_bucket.arn}/*"]
+        Resource = ["${var.bucket_arn}/*"]
       }
     ]
   })
@@ -123,8 +123,8 @@ resource "aws_iam_policy" "ssm_policy" {
         ]
         Effect = "Allow"
         Resource = [
-          aws_ssm_parameter.access_key.arn,
-          aws_ssm_parameter.secret_key.arn
+          var.access_key_arn,
+          var.secret_key_arn
         ]
       }
     ]
