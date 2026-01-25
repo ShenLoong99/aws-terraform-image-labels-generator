@@ -9,14 +9,15 @@ repos:
   - repo: https://github.com/antonbabenko/pre-commit-terraform
     rev: v1.105.0
     hooks:
-      - id: terraform_fmt      # Ensures consistent spacing/indentation
+      - id: terraform_fmt       # Ensures consistent spacing/indentation
+        args:
+          - --args=-recursive
       - id: terraform_validate  # Basic syntax & schema validation
-      - id: terraform_tflint   # Catches AWS provider-specific errors
+      - id: terraform_tflint    # Catches AWS provider-specific errors
         args:
-          - "--args=--config=.tflint.hcl"
+        - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
+        - --args=--recursive
       - id: terraform_docs      # Automates Technical Reference updates
-        args:
-          - --args=--prefix=README.template.md
 
   - repo: https://github.com/bridgecrewio/checkov
     rev: 3.2.497 # It is best practice to use a specific stable version

@@ -1,15 +1,6 @@
 terraform {
   required_version = ">= 1.5.0"
 
-  backend "remote" {
-    hostname     = "app.terraform.io"
-    organization = "my-terraform-aws-projects-2025"
-
-    workspaces {
-      name = "AWS-Image-Labels-Generator"
-    }
-  }
-
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -31,6 +22,6 @@ provider "aws" {
   region = var.aws_region
 
   default_tags {
-    tags = local.common_tags
+    tags = var.default_tags
   }
 }

@@ -14,5 +14,5 @@ resource "aws_ssm_parameter" "secret_key" {
 
 # Create IAM Access Key for the Developer User
 resource "aws_iam_access_key" "project_user_key" {
-  user = aws_iam_user.project_user.name
+  user = var.user_name
 }
