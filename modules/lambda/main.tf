@@ -1,8 +1,8 @@
 # Zip the Lambda function code
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_file = "lambda/detect_labels.py" # includes detect_labels.py + python/
-  output_path = "lambda/function.zip"
+  source_file = "${path.module}/lambda/detect_labels.py" # includes detect_labels.py + python/
+  output_path = "${path.module}/lambda/function.zip"
 }
 
 # Lambda function for Rekognition
