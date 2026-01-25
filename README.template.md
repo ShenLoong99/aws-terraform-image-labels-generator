@@ -113,12 +113,21 @@
 <pre>aws-terraform-image-labels-generator
 ├── .github/workflows/          # GitHub Actions CI/CD workflows
 │   ├── ci.yml                  # CI: Lints, formats, and validates Terraform code
-│   ├── update-readme.yml       # Auto-updates README with terraform-docs
+│   ├── documentation.yml       # Auto-updates README with terraform-docs
 │   └── cd.yml                  # Production deployment & verification
 ├── assets/                     # Architecture diagrams and UI screenshots
-├── lambda/                     # Backend Logic
-│   └── detect_labels.py        # Python script (Runs locally and in AWS)
-│   └── function.zip            # Optimized deployment package, less than 1KB
+├── modules/                  # Child Modules (Stateless Logic)
+│   ├── ssm/                  # Systems Manager definitions
+│   ├── iam/                  # Least-privilege Roles & Policies
+│   ├── storage/              # S3 Buckets for static hosting
+│   └── lambda/               # Lambda Compute & Trigger setup
+│       └── lambda/           # Serverless backend logic
+│           ├── func.py       # Lambda Python source code
+│           └── func.zip      # Compiled deployment artifact
+│       ├── main.tf           # Module-specific resources
+│       ├── outputs.tf        # Values exported to the root
+│       ├── providers.tf      # Version constraints (No cloud block!)
+│       └── variables.tf      # Module inputs
 ├── scripts/                    # Automation Tooling
 │   ├── setup.sh                # Initial local environment setup
 │   ├── sync-config.sh          # Fetches SecureStrings from SSM to config.json
@@ -128,17 +137,16 @@
 ├── .terraform.lock.hcl         # Ensures consistent provider versions across environments
 ├── .gitignore                  # Prevents config.json & .tfstate from being pushed
 ├── .pre-commit-config.yml      # Runs a series of checks (hooks) locally before every git commit
+├── .terraform-docs.yml         # Configurations for dynamic generated terraform content and file for readme
 ├── .tflint.hcl                 # Configuration for TFLint
 ├── config.json                 # Dynamic configuration of bucket names and IAM keys fetched from AWS SSM by sync-config.sh script
-├── iam.tf                      # IAM Users, Groups, and Permissions
-├── lambda.tf                   # Lambda function and ZIP configuration
 ├── main.tf                     # S3 cloudwatch error metric
 ├── outputs.tf                  # Exported ARNs and Names for GitOps
 ├── providers.tf                # AWS & Archive provider configurations
-├── variables.tf                # Input variables for AWS Region and resource tagging
-├── ssm.tf                      # SSM Parameter Store secure key management
-├── storage.tf                  # S3 bucket configuration
 ├── variables.tf                # Project-wide input variables
+├── .terraform.lock.hcl         # Provider lock file
+├── terraform.tfstate           # Local state file (if not using cloud)
+├── terraform.tfstate.backup    # Previous state snapshot
 ├── README.template.md          # Manual documentation source
 └── README.md                   # Auto-generated final documentation
 </pre>
@@ -257,7 +265,7 @@ This section is automatically updated with the latest infrastructure details.
   <li>
     <strong>Dynamically update readme documentation</strong>
     <ul>
-      <li><strong>Tool:</strong> Terraform Cloud + GitHub Actions.</li>
+      <li><strong>Tool:</strong> <code>terraform_docs</code> + GitHub Actions.</li>
       <li><strong>Trigger:</strong> Merges to the <code>main</code> branch.</li>
       <li>
         <strong>Outcome:</strong> The pipeline verifies the infrastructure state from Terraform Cloud, retrieve outputs from Terraform Cloud and update the readme documentation file dynamically.
@@ -430,5 +438,5 @@ This section is automatically updated with the latest infrastructure details.
 [cd-shield]: https://github.com/{{GITHUB_USER}}/{{REPO_NAME}}/actions/workflows/cd.yml/badge.svg
 [cd-url]: https://github.com/{{GITHUB_USER}}/{{REPO_NAME}}/actions/workflows/cd.yml
 
-[docs-shield]: https://github.com/{{GITHUB_USER}}/{{REPO_NAME}}/actions/workflows/update-readme.yml/badge.svg
-[docs-url]: https://github.com/{{GITHUB_USER}}/{{REPO_NAME}}/actions/workflows/update-readme.yml
+[docs-shield]: https://github.com/{{GITHUB_USER}}/{{REPO_NAME}}/actions/workflows/documentation.yml/badge.svg
+[docs-url]: https://github.com/{{GITHUB_USER}}/{{REPO_NAME}}/actions/workflows/documentation.yml
