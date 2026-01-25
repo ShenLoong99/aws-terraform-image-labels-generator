@@ -296,7 +296,7 @@ This section is automatically updated with the latest infrastructure details.
   </li>
   <li>
     <strong>Run the analysis:</strong><br>
-    <pre>python lambda/detect_labels.py &lt;s3-bucket-name&gt; &lt;your-image-file-name&gt;</pre>
+    <pre>python modules/lambda/lambda/detect_labels.py &lt;s3-bucket-name (without s3://)&gt; &lt;your-image-file-name&gt;</pre>
   </li>
   <li>
     <strong>View Logs:</strong> The logs will appear instantly in your VS Code terminal.<br>
