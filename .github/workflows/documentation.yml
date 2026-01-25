@@ -5,7 +5,8 @@ on:
     paths:
       - 'README.template.md'
       - '**.tf'
-      - '.github/workflows/update-readme.yml'
+      - '.github/workflows/documentation.yml'
+      - '.terraform-docs.yml'
   workflow_dispatch:
 
 jobs:
@@ -30,13 +31,14 @@ jobs:
               -e "s|{{GITHUB_USER}}|${{ github.repository_owner }}|g" \
               README.template.md > README.md
 
-      # Inject Terraform technical details into the newly created README.md
+      # Update all modules / root README.md
       - name: Render terraform docs
         uses: terraform-docs/gh-actions@v1.4.1
         with:
           working-dir: .
+          config-file: .terraform-docs.yml
           output-file: README.md
-          output-method: inject
+          output-method: inject # This ensures it targets the markers
 
       # Format README using Prettier
       - name: Format README
@@ -45,19 +47,18 @@ jobs:
       # Commit and Push with improved error handling
       - name: Commit and Push Changes
         run: |
-          # CRITICAL: Reclaim ownership of all files from 'root' to 'runner'
           sudo chown -R $USER:$USER .
-
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Mark the directory as safe for the current user
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
+          # Stage the root README AND any READMEs found in modules
           git add README.md
+          git add modules/**/README.md
+
           if git diff --staged --quiet; then
-            echo "No changes to README.md"
+            echo "No changes to any README files"
           else
-            git commit -m "docs: automated readme update [skip ci]"
-            git push origin main
+            git commit -m "docs: automated technical reference update [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
           fi
