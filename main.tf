@@ -57,18 +57,19 @@ resource "terraform_data" "setup_script" {
   }
 }
 
+# Commented to reduce any potential cost
 # CloudWatch Alarm for Lambda Errors
-resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
-  alarm_name          = "RekognitionLambdaErrors"
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = "1"
-  metric_name         = "Errors"
-  namespace           = "AWS/Lambda"
-  period              = "60"
-  statistic           = "Sum"
-  threshold           = "0"
-  alarm_description   = "This alarm triggers if the Lambda fails to process an image."
-  dimensions = {
-    FunctionName = module.lambda.lambda_function_name
-  }
-}
+# resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
+#   alarm_name          = "RekognitionLambdaErrors"
+#   comparison_operator = "GreaterThanThreshold"
+#   evaluation_periods  = "1"
+#   metric_name         = "Errors"
+#   namespace           = "AWS/Lambda"
+#   period              = "60"
+#   statistic           = "Sum"
+#   threshold           = "0"
+#   alarm_description   = "This alarm triggers if the Lambda fails to process an image."
+#   dimensions = {
+#     FunctionName = module.lambda.lambda_function_name
+#   }
+# }
