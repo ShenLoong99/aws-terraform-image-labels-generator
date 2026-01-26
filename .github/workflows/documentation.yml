@@ -12,12 +12,21 @@ on:
 jobs:
   update-docs:
     runs-on: ubuntu-latest
+    environment: prod
     permissions:
       contents: write
     steps:
+      - name: Generate Token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          token: ${{ steps.generate_token.outputs.token }} # Use the App token here
           # Use persist-credentials to ensure the token is available for the push
           persist-credentials: true
           # Ensure we check out the actual branch, not a detached HEAD
