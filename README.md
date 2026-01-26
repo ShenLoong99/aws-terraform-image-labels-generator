@@ -268,8 +268,17 @@ This section is automatically updated with the latest infrastructure details.
 <h2 id="gitops">GitOps & CI/CD Workflow</h2>
 <p>This project uses a fully automated GitOps pipeline to ensure code quality and deployment reliability. The <strong>Pre-commit</strong> framework implements a "Shift-Left" strategy, ensuring that code is formatted, documented, and secure before it ever leaves your machine.</p>
 
-<h3>Workflow Files</h3>
+<h3>Workflow</h3>
 <ol>
+  <li>
+    <strong>Branch Protection Rulesets</strong><br>
+    To ensure high code quality and prevent unauthorized changes to the production environment, the <code>main</code> branch is governed by a <strong>GitHub Branch Ruleset</strong>.
+    <ul>
+      <li><strong>Pull Request Mandatory:</strong> No code can be pushed directly to <code>main</code>. All changes must originate from a feature branch and be merged via a Pull Request.</li>
+      <li><strong>Required Status Checks:</strong> The <code>Infrastructure CI</code> (Terraform Plan & Static Analysis) must pass successfully before a merge is permitted.</li>
+      <li><strong>Bypass Authority:</strong> The dedicated GitHub App is added to the Bypass List with "Always allow" permissions. This allows the bot to push documentation updates directly to <code>main</code> without being blocked by PR requirements.</li>
+    </ul>
+  </li>
   <li>
     <strong>Pre-commit</strong>
     <ul>
@@ -321,7 +330,32 @@ This section is automatically updated with the latest infrastructure details.
 <ul>
   <li><strong>Repository Secret <code>TF_API_TOKEN</code>:</strong> Required for GitHub to communicate with Terraform Cloud.</li>
   <li><strong>Trigger:</strong> A GitHub Actions OIDC role (<code>GitHubActionRole</code>) allows the runner to verify AWS resources without long-lived keys.</li>
+  <li>
+      <strong>Automated Documentation via GitHub App:</strong> Instead of using a Personal Access Token (PAT) or the default <code>GITHUB_TOKEN</code>, this project uses a custom <strong>GitHub App</strong> for automated tasks.<br>
+      <table>
+         <thead>
+            <tr>
+               <td>Secret</td>
+               <td>Description</td>
+               <td>Source</td>
+            </tr>
+         </thead>
+         <tbody>
+            <tr>
+               <td><code>BOT_APP_ID</code></td>
+               <td>The unique numerical ID assigned to your GitHub App.</td>
+               <td>App Settings > General</td>
+            </tr>
+            <tr>
+               <td><code>BOT_PRIVATE_KEY</code></td>
+               <td>The full content of the generated <code>.pem</code> private key file.</td>
+               <td>App Settings > Private keys</td>
+            </tr>
+         </tbody>
+      </table>
+   </li>
 </ul>
+<div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="usage">Usage & Testing</h2>
 <p>
