@@ -3,12 +3,6 @@ name: "Infrastructure CI"
 on:
   pull_request:
     branches: [ main ]
-    paths:
-      - '**.tf'
-      - 'lambda/**'
-      - 'frontend/**'
-      - 'scripts/**'
-      - '.github/workflows/ci.yml'
   workflow_dispatch:
 
 jobs:
