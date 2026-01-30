@@ -5,7 +5,7 @@ output "s3_bucket_name" {
 
 output "lambda_execution_role_arn" {
   description = "IAM role ARN assumed by Lambda for S3 + Rekognition access"
-  value       = module.iam.lambda_execution_role_arn
+  value       = module.lambda.lambda_execution_role_arn
 }
 
 output "lambda_function_name" {
@@ -15,7 +15,7 @@ output "lambda_function_name" {
 
 output "lambda_role_name" {
   description = "IAM role name for Lambda"
-  value       = module.iam.lambda_role_name
+  value       = module.lambda.lambda_role_name
 }
 
 output "aws_region" {

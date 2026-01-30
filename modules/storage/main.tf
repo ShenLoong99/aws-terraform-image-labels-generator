@@ -70,3 +70,29 @@ resource "aws_s3_bucket_metric" "bucket_logging" {
   bucket = aws_s3_bucket.images_bucket.id
   name   = "EntireBucket"
 }
+
+# S3 policy for Rekognition access
+resource "aws_iam_policy" "rekognition_s3_policy" {
+  name        = "${var.project_name}-s3-policy"
+  description = "Read-only access to the images bucket"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:ListBucket"]
+        Resource = [aws_s3_bucket.images_bucket.arn]
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["s3:GetObject"]
+        Resource = ["${aws_s3_bucket.images_bucket.arn}/*"]
+      }
+    ]
+  })
+
+  tags = {
+    Name = "${var.project_name}-s3-policy"
+  }
+}
