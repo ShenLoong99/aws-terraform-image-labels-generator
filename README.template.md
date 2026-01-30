@@ -48,7 +48,7 @@
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#challenges-faced">Challenges</a></li>
-    <li><a href="#cost-optimization">Cost Optimization</a></li>
+    <li><a href="#well-architected">AWS Well Architected Framework Alignment</a></li>
     <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
 </details>
@@ -421,17 +421,77 @@ This section is automatically updated with the latest infrastructure details.
 </table>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
-<h2 id="cost-optimization">Cost Optimization (Free Tier)</h2>
-<p>
-  To keep the project budget-friendly, the following strategies are implemented or recommended:
-</p>
-<ul>
-  <li><strong>S3 Lifecycle Policies:</strong> Automatically transition images to <em>S3 Standard-IA</em> or <em>Glacier</em> after 30 days of inactivity to reduce storage costs.</li>
-  <li><strong>Confidence Thresholds:</strong> By setting a <code>MIN_CONFIDENCE</code> level (e.g., 70%), we filter out low-certainty results, reducing unnecessary data processing.</li>
-  <li><strong>Free Tier Utilization:</strong> Amazon Rekognition and S3 both offer free tier limits for the first 12 months, which this project stays within for light usage.</li>
-  <li><strong>Manual Apply in TFC:</strong> Utilize Terraform Cloud Version Control Workflow to prevent accidental resource creation and associated costs.</li>
-  <li><strong>Serverless Execution:</strong> By using Lambda instead of a local environment, you only pay for the milliseconds the code is actually running (1M free requests/month).</li>
-</ul>
+<h2>🌐 AWS Well-Architected Framework Alignment</h2>
+<p>This project is engineered following the 6 pillars of the AWS Well-Architected Framework to ensure a secure, high-performing, resilient, and efficient infrastructure.</p>
+
+<table width="100%">
+  <thead>
+    <tr>
+      <th align="left" width="30%">Pillar</th>
+      <th align="left">Project Implementation Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1. Operational Excellence</strong></td>
+      <td>
+        <ul>
+          <li><strong>Infrastructure as Code (IaC):</strong> Fully modularized Terraform configuration for repeatable and predictable deployments.</li>
+          <li><strong>GitOps Workflow:</strong> Automated CI/CD pipelines via GitHub Actions and Terraform Cloud to perform linting, security scans, and documentation updates.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><strong>2. Security</strong></td>
+      <td>
+        <ul>
+          <li><strong>Least Privilege:</strong> Custom IAM policies restrict Rekognition and S3 access to only necessary actions.</li>
+          <li><strong>Secrets Management:</strong> Sensitive IAM keys are never hardcoded; they are stored as <code>SecureString</code> types in AWS SSM Parameter Store.</li>
+          <li><strong>Static Analysis:</strong> Integration of <strong>Checkov</strong> to scan for misconfigurations and encryption gaps before deployment.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><strong>3. Reliability</strong></td>
+      <td>
+        <ul>
+          <li><strong>Managed Services:</strong> Leverages serverless technologies (S3, Lambda, Rekognition) that automatically handle high availability and fault tolerance.</li>
+          <li><strong>Versioning:</strong> S3 Bucket Versioning is enabled to protect against accidental deletions or overwrites of source images.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><strong>4. Performance Efficiency</strong></td>
+      <td>
+        <ul>
+          <li><strong>Serverless Scaling:</strong> Uses AWS Lambda to scale execution instantly based on the number of images processed without managing servers.</li>
+          <li><strong>Regional Optimization:</strong> Resources are deployed in <code>ap-southeast-1</code> to ensure low-latency API calls for local execution.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><strong>5. Cost Optimization</strong></td>
+      <td>
+        <ul>
+          <li><strong>Confidence Thresholds:</strong> By setting a <code>MIN_CONFIDENCE</code> level (e.g., 70%), we filter out low-certainty results, reducing unnecessary data processing.</li>
+          <li><strong>Manual Apply in TFC:</strong> Utilize Terraform Cloud Version Control Workflow to prevent accidental resource creation and associated costs.</li>
+          <li><strong>Serverless Execution:</strong> By using Lambda instead of a local environment, you only pay for the milliseconds the code is actually running (1M free requests/month).</li>
+          <li><strong>Lifecycle Management:</strong> Implemented S3 Lifecycle Rules to auto-expire images after 30 days and abort incomplete uploads after 7 days to eliminate "zombie" storage costs.</li>
+          <li><strong>Pay-as-you-go:</strong> Utilizes the AWS Free Tier (Lambda/S3) to ensure near-zero costs for small-scale portfolio demonstrations.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><strong>6. Sustainability</strong></td>
+      <td>
+        <ul>
+          <li><strong>Serverless Architecture:</strong> Minimizes carbon footprint by using shared high-utilization resources (Lambda) instead of dedicated, idle EC2 instances.</li>
+          <li><strong>Data Minimization:</strong> Automated cleanup of old data reduces the long-term energy requirements of data storage.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
 <div align="right"><a href="#readme-top">↑ Back to Top</a></div>
 
 <h2 id="acknowledgements">Acknowledgements</h2>

@@ -13,11 +13,6 @@ variable "default_tags" {
   type        = map(string)
 }
 
-variable "lambda_role_arn" {
-  description = "ARN of IAM role for Lambda"
-  type        = string
-}
-
 variable "bucket" {
   description = "The S3 bucket"
   type        = string

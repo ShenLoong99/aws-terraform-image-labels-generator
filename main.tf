@@ -19,31 +19,29 @@ module "storage" {
 # Module for System Manager
 module "ssm" {
   source       = "./modules/ssm"
-  user_name    = module.iam.user_name
+  user_name    = module.auth.user_name
   project_name = var.project_name
   aws_region   = var.aws_region
   default_tags = local.common_tags
 }
 
 # Module for IAM (Permissions, roles, policies)
-module "iam" {
-  source         = "./modules/iam"
-  bucket_arn     = module.storage.bucket_arn
-  access_key_arn = module.ssm.access_key_arn
-  secret_key_arn = module.ssm.secret_key_arn
-  project_name   = var.project_name
-  aws_region     = var.aws_region
-  default_tags   = local.common_tags
+module "auth" {
+  source                    = "./modules/auth"
+  project_name              = var.project_name
+  aws_region                = var.aws_region
+  default_tags              = local.common_tags
+  rekognition_policy_arn    = module.lambda.rekognition_policy_arn
+  rekognition_s3_policy_arn = module.storage.rekognition_s3_policy_arn
 }
 
 # Module for Lambda
 module "lambda" {
-  source          = "./modules/lambda"
-  lambda_role_arn = module.iam.lambda_role_arn
-  bucket          = module.storage.bucket
-  project_name    = var.project_name
-  aws_region      = var.aws_region
-  default_tags    = local.common_tags
+  source       = "./modules/lambda"
+  bucket       = module.storage.bucket
+  project_name = var.project_name
+  aws_region   = var.aws_region
+  default_tags = local.common_tags
 }
 
 # Execute setup script after S3 bucket creation
