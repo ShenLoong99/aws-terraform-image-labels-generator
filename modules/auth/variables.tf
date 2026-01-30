@@ -13,17 +13,12 @@ variable "default_tags" {
   type        = map(string)
 }
 
-variable "bucket_arn" {
-  description = "ARN of the image bucket"
+variable "rekognition_s3_policy_arn" {
+  description = "ARN of rekognition s3 policy"
   type        = string
 }
 
-variable "access_key_arn" {
-  description = "ARN of SSM access key"
-  type        = string
-}
-
-variable "secret_key_arn" {
-  description = "ARN of SSM secret key"
+variable "rekognition_policy_arn" {
+  description = "ARN of rekognition policy"
   type        = string
 }
