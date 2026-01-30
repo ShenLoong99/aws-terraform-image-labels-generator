@@ -16,10 +16,10 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_iam_access_key.project_user_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_access_key) | resource |
-| [aws_iam_policy.ssm_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
-| [aws_ssm_parameter.access_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter) | resource |
-| [aws_ssm_parameter.secret_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter) | resource |
+| [aws_iam_group.developer_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group) | resource |
+| [aws_iam_group_membership.developer_team](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_membership) | resource |
+| [aws_iam_group_policy_attachment.group_attach](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment) | resource |
+| [aws_iam_user.project_user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user) | resource |
 
 ## Inputs
 
@@ -28,12 +28,12 @@ No modules.
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | AWS region to deploy resources | `string` | n/a | yes |
 | <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | Extra tags to pass to the provider | `map(string)` | n/a | yes |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | Project name prefix | `string` | n/a | yes |
-| <a name="input_user_name"></a> [user\_name](#input\_user\_name) | Name of the authorized project user | `string` | n/a | yes |
+| <a name="input_rekognition_policy_arn"></a> [rekognition\_policy\_arn](#input\_rekognition\_policy\_arn) | ARN of rekognition policy | `string` | n/a | yes |
+| <a name="input_rekognition_s3_policy_arn"></a> [rekognition\_s3\_policy\_arn](#input\_rekognition\_s3\_policy\_arn) | ARN of rekognition s3 policy | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_access_key_path"></a> [access\_key\_path](#output\_access\_key\_path) | SSM access key for local config.json |
-| <a name="output_secret_key_path"></a> [secret\_key\_path](#output\_secret\_key\_path) | SSM secret key for local config.json |
+| <a name="output_user_name"></a> [user\_name](#output\_user\_name) | Name of the authorized project user |
 <!-- END_TF_DOCS -->
